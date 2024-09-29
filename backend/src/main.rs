@@ -1,12 +1,13 @@
 use actix_web::{web, App, HttpServer, Responder};
 
+const PORT: u16 = 3001;
+
 async fn hello() -> impl Responder {
     "Hello, World!\n"
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    const PORT: u16 = 3001;
     
     println!("Listening on port {}...", PORT);
 
