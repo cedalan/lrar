@@ -4,7 +4,7 @@
         <div v-else-if="error"> {{ error }} </div>
         <div v-else>
             <p> {{ tenant?.name }} </p>
-            <p> {{ tenant?.img }} </p>
+            <p> {{ tenant?.imagePath }} </p>
             <p> {{ tenant?.burns }} </p>
         </div>
     </div>
@@ -23,7 +23,7 @@ export default defineComponent ({
     name: "TenantComponent",
     data() {
         return {
-            tentant: null as Tenant | null,
+            tenant: null as unknown as Tenant,
             loading: true,
             error: null as string | null,
         };
@@ -31,7 +31,7 @@ export default defineComponent ({
     async created() {
         try {
             //Send request to backend and blah blah
-            this.tentat.name = "Mr. Test";
+            this.tenant.name = "Mr. Test";
             this.tenant.imagePath = "some/path/to/image";
             this.tenant.burns = 4;
         } catch (err: any) {
