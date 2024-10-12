@@ -1,11 +1,13 @@
 <template>
     <div>
-        <div v-if="loading">Loading...</div>
-        <div v-else-if="error"> {{ error }} </div>
-        <div v-else>
-            <p> {{ tenant?.name }} </p>
-            <p> {{ tenant?.imagePath }} </p>
+        <div v-if="tenant">
+            <h1> {{ tenant?.name }} </h1>
+            <img :src="tenant?.image_path" alt="Tenant image">
             <p> {{ tenant?.burns }} </p>
+            <p> {{ tenant?.image_path }}</p>
+        </div>
+        <div v-else>
+            <p>Error</p>
         </div>
     </div>
 </template>
@@ -15,7 +17,7 @@ import { defineComponent } from 'vue';
 
 interface Tenant {
     name: string,
-    imagePath: string,
+    image_path: string,
     burns: number,
 }
 
@@ -24,21 +26,24 @@ export default defineComponent ({
     data() {
         return {
             tenant: null as unknown as Tenant,
-            loading: true,
-            error: null as string | null,
         };
     },
     async created() {
-        try {
-            //Send request to backend and blah blah
-            this.tenant.name = "Mr. Test";
-            this.tenant.imagePath = "some/path/to/image";
-            this.tenant.burns = 4;
-        } catch (err: any) {
-            this.error = err.message;
-        } finally {
-            this.loading = false;
-        }
+    try {
+      const response = await fetch("http://127.0.0.1:3001/tenants");
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok: " + response.statusText);
+      }
+
+      const data: Tenant = await response.json(); // Type the fetched data as Tenant
+
+      // Assign the response data to tenant
+      this.tenant = data;
+
+    } catch (error) {
+      console.error("Error fetching tenant data:", error);
     }
+  },
 });
 </script>
