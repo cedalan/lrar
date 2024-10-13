@@ -17,13 +17,19 @@ async fn hello() -> impl Responder {
 
 #[get("/tenants")]
 async fn get_tenants() -> impl Responder {
-    let my_tenant = Tenant {
-        name: "Tenant 1".to_string(),
-        image_path: "frontend/src/assets/LRAR_logo.jpg".to_string(),
-        burns: 1,
-    };
+    const N_TENANTS:usize = 5;
+    let mut tenants: Vec<Tenant> = Vec::with_capacity(N_TENANTS);
+    
+    for x in 0..N_TENANTS {
+        let my_tenant = Tenant {
+            name: "hi".to_string(),
+            image_path: "path/to/img".to_string(),
+            burns: x as u8,
+        };
+        tenants.push(my_tenant)
+    }
 
-    HttpResponse::Ok().json(my_tenant)
+    HttpResponse::Ok().json(tenants)
 }
 
 #[actix_web::main]
