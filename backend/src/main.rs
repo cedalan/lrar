@@ -22,8 +22,8 @@ async fn get_tenants() -> impl Responder {
     
     for x in 0..N_TENANTS {
         let my_tenant = Tenant {
-            name: "hi".to_string(),
-            image_path: "path/to/img".to_string(),
+            name: "Tenant name".to_string(),
+            image_path: "https://us-tuna-sounds-images.voicemod.net/3d13bfc9-e63b-4deb-a987-2f11977fbd24-1689085830227.jpg".to_string(),
             burns: x as u8,
         };
         tenants.push(my_tenant)
