@@ -17,13 +17,13 @@ async fn hello() -> impl Responder {
 
 #[get("/tenants")]
 async fn get_tenants() -> impl Responder {
-    const N_TENANTS:usize = 5;
+    const N_TENANTS:usize = 6;
     let mut tenants: Vec<Tenant> = Vec::with_capacity(N_TENANTS);
     
     for x in 0..N_TENANTS {
         let my_tenant = Tenant {
             name: "Tenant name".to_string(),
-            image_path: "https://us-tuna-sounds-images.voicemod.net/3d13bfc9-e63b-4deb-a987-2f11977fbd24-1689085830227.jpg".to_string(),
+            image_path: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaNYHA2New-SxlLuwl_vLacub2oAPtnplWGA&s".to_string(),
             burns: x as u8,
         };
         tenants.push(my_tenant)

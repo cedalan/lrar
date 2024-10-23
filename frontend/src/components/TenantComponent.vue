@@ -1,6 +1,6 @@
 <template>
-  <div v-if="tenants.length" class="tenantsDiv">
-    <div v-for="tenant in tenants" :key="tenant.name" class="tenantDiv">
+  <div v-if="tenants.length" class="all-tenants-div">
+    <div v-for="tenant in tenants" :key="tenant.name" class="tenant-div">
       <h1> {{ tenant.name }} </h1>
       <img :src="tenant.image_path" alt="Tenant image">
       <p> {{ tenant.burns }} </p>
@@ -47,22 +47,23 @@ export default defineComponent ({
 });
 </script>
 
-<style>
-  .tenantsDiv {
+<style scoped>
+  .all-tenants-div {
     display: flex;
     gap: 20px;
-    flex-direction: row;
-    flex-wrap: wrap; /* Allow wrapping */
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
   }
-  .tenantDiv {
-    flex: 1 1 calc(20% - 40px); /* Adjust to fit three items per row with gap */
+  .tenant-div {
+    flex: 0 0 calc(16.66% - 20px);
     background-color: lightcoral;
     padding: 20px;
     text-align: center;
     box-sizing: border-box; /* Include padding in width calculation */
   }
-  .tenantDiv img {
-    max-width: 100%; /* Ensure images fit within their container */
-    height: auto; /* Maintain aspect ratio */
+  .tenant-div img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
   }
 </style>

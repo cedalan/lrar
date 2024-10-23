@@ -3,7 +3,7 @@ import TenantComponent from '@/components/TenantComponent.vue';
 </script>
 
 <template>
-    <div id="tenantContainer">
-        <TenantComponent></TenantComponent>
-    </div>
+    <main>
+        <TenantComponent />
+    </main>
 </template>
