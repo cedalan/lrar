@@ -1,8 +1,7 @@
+use diesel::prelude::SqliteConnection;
+use diesel::Connection;
 use dotenvy::dotenv;
 use std::env;
-use diesel::Connection;
-use diesel::prelude::SqliteConnection;
-
 
 
 pub mod models;
@@ -18,8 +17,10 @@ pub fn establish_connection() -> SqliteConnection {
 #[cfg(test)]
 
 mod tests {
-    use crate::{models, tenants};
     use super::*;
+    use crate::models::Tenant;
+    use crate::tenants::get_all_tenants;
+    use crate::tenants;
     use rusqlite::{Connection as ManualConnection, Result};
 
     struct TestContext {
@@ -59,17 +60,30 @@ mod tests {
     #[test]
     fn should_push_new_tenant_to_database() {
         let _test_context = TestContext::new();
-        let new_user: models::Tenant = models::Tenant {
+        create_new_user();
+        let mut statement = _test_context.connection.prepare("SELECT count(*) FROM tenants").unwrap();
+        let result = statement.column_count();
+        println!("{:?}", result);
+        assert_eq!(1, result);
+    }
+
+    fn create_new_user() -> Tenant {
+        let new_user: Tenant = Tenant {
             name: "test".to_string(),
             height: 20,
             profile_picture_uri: "TEST".to_string(),
             burns: 0,
         };
-        tenants::create_tenant(new_user);
-        let mut statement = _test_context.connection.prepare("SELECT count(*) FROM tenants").unwrap();
-        let result = statement.column_count();
-        println!("{:?}", result);
-        assert_eq!(1, result);
+        new_user
+    }
+
+    #[test]
+    fn should_get_all_tenants() {
+        let _test_context = TestContext::new();
+        let test_user = create_new_user();
+        tenants::create_tenant(test_user);
+        let tenants_in_database = get_all_tenants();
+        assert_eq!(1, tenants_in_database.len());
     }
 
 
