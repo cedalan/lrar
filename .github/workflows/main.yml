@@ -1,0 +1,51 @@
+name: Deploy to Raspberry Pi
+
+on:
+  push:
+    branches: [ main ]
+
+  workflow_dispatch:
+#should probably make sure stuff is not running here...
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: murder ass-berry pi
+      - run: echo "don't know how to kill backend and cant be bothered to find out"
+      - uses: actions/checkout@v2
+      - name: build stuff for production
+      - run: |
+          cd backend
+          cargo build --release --target=${TARGET_ARCH}
+          cd ..
+          cd frontend
+          npm run build
+
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: run backend server
+      - run: cargo run
+
+
+# use systemd on r-ass-berry  pi to get it runnin .
+#fill file /lib/systemd/system/lrar.service with:
+#  [Unit]
+#  Description=Hello World
+#  After=multi-user.target
+#
+#  [Service]
+#  ExecStart=/home/pi/hello-world
+#  Restart=always
+#  RestartSec=10s
+#
+#  [Install]
+#  WantedBy=multi-user.target
+
+# then run: sudo systemctl daemon-reload to get daemon to see the change
+#enable with systemctl enable lrar.service
+#start with sudo systemctl start hello-world.service
+
+# then to restart the service after deployment, do sudo systemctl restart hello-world.service
+# TARGET_ARCH=armv7-unknown-linux-gnueabihf
