@@ -1,10 +1,10 @@
-use actix_web::{web, get, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, get, App, HttpResponse, HttpServer, Responder, post};
 use actix_cors::Cors;
-use serde::Serialize;
 
+use serde::{Deserialize, Serialize};
 const PORT: u16 = 3001;
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 struct Tenant {
     name: String,
     image_path: String,
@@ -17,9 +17,9 @@ async fn hello() -> impl Responder {
 
 #[get("/tenants")]
 async fn get_tenants() -> impl Responder {
-    const N_TENANTS:usize = 6;
+    const N_TENANTS: usize = 6;
     let mut tenants: Vec<Tenant> = Vec::with_capacity(N_TENANTS);
-    
+
     for x in 0..N_TENANTS {
         let my_tenant = Tenant {
             name: "Tenant name".to_string(),
@@ -34,7 +34,6 @@ async fn get_tenants() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    
     println!("Listening on port {}...", PORT);
 
     HttpServer::new(|| {
@@ -49,7 +48,10 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(hello))
             .service(get_tenants)
     })
-    .bind(format!("127.0.0.1:{}", PORT))?
-    .run()
-    .await
+        .bind(format!("127.0.0.1:{}", PORT))?
+        .run()
+        .await
 }
+
+
+

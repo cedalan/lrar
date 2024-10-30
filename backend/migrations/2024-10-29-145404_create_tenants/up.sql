@@ -1,0 +1,7 @@
+-- Your SQL goes here
+CREATE TABLE tenants (
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+name VARCHAR NOT NULL,
+height INTEGER NOT NULL,
+profile_picture_uri VARCHAR NOT NULL,
+burns INTEGER DEFAULT 0);
