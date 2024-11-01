@@ -17,3 +17,4 @@ so go take a look at that
 
 should automagically run create table and migrations in the database for CI/CD, haven't gotten that far.
 The tests require an empty database
+also check [this out for how to compile rust stuff on ass berry pi](https://medium.com/swlh/compiling-rust-for-raspberry-pi-arm-922b55dbb050)
