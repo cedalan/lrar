@@ -1,0 +1,11 @@
+services:
+  frontend:
+    container_name: lrar_frontend
+    build: ./frontend
+    ports:
+      - "5173:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
