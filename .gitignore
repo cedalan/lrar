@@ -175,3 +175,4 @@ frontend/*.tsbuildinfo
 # End of https://www.toptal.com/developers/gitignore/api/rust,vuejs,intellij
 
 .DS_Store
+.env
