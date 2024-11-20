@@ -49,7 +49,7 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(hello))
             .service(get_tenants)
     })
-    .bind(format!("127.0.0.1:{}", PORT))?
+    .bind(format!("0.0.0.0:{}", PORT))?
     .run()
     .await
 }
