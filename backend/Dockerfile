@@ -14,8 +14,10 @@ RUN apt-get update && apt-get install -y libpq5 libssl-dev && rm -rf /var/lib/ap
 
 WORKDIR /app
 
-COPY --from=builder /app/target/release/backend /app/backend
+COPY --from=builder /app/target/release/backend /app/backend_binary
+
+COPY backend/assets /app/backend/assets
 
 EXPOSE 3001
 
-CMD ["./backend"]
+CMD ["./backend_binary"]

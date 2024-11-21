@@ -25,3 +25,14 @@ pub struct NewTenant {
     pub dishwasher_count: Option<i32>,
     pub favorite_quote: Option<String>,
 }
+
+#[derive(Serialize)]
+pub struct TenantResponse {
+    pub id: i32,
+    pub name: String,
+    pub age: Option<i32>,
+    pub image_url: Option<String>,
+    pub burn_count: Option<i32>,
+    pub dishwasher_count: Option<i32>,
+    pub favorite_quote: Option<String>,
+}
