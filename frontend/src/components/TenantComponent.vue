@@ -1,9 +1,11 @@
 <template>
   <div v-if="tenants.length" class="all-tenants-div">
     <div v-for="tenant in tenants" :key="tenant.name" class="tenant-div">
-      <h1> {{ tenant.name }} </h1>
+      <h2> {{ tenant.name }}, {{ tenant.age }} år</h2>
       <img :src="tenant.image_url" alt="Tenant image">
-      <p> {{ tenant.burn_count }} </p>
+      <p> Tatt ut av oppvaskmaskinen {{ tenant.dishwasher_count }} ganger </p>
+      <p> Burns: {{ tenant.burn_count }} </p>
+      <p style="font-style:italic;">{{ tenant.favorite_quote }}</p>
     </div>
   </div>
   <div v-else>
@@ -59,7 +61,7 @@ export default defineComponent ({
     justify-content: space-evenly;
   }
   .tenant-div {
-    flex: 0 0 calc(16.66% - 20px);
+    flex: 0 0 calc(22.00% - 20px);
     background-color: lightcoral;
     padding: 20px;
     text-align: center;
@@ -67,7 +69,7 @@ export default defineComponent ({
   }
   .tenant-div img {
     width: 100%;
-    height: 150px;
+    height: 200px;
     object-fit: cover;
   }
 </style>
