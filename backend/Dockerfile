@@ -1,0 +1,23 @@
+FROM rust:latest AS builder
+
+RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY backend /app
+
+RUN cargo build --release
+
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y libpq5 libssl-dev && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=builder /app/target/release/backend /app/backend_binary
+
+COPY backend/assets /app/backend/assets
+
+EXPOSE 3001
+
+CMD ["./backend_binary"]
