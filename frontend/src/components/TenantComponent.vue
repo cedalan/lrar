@@ -2,8 +2,8 @@
   <div v-if="tenants.length" class="all-tenants-div">
     <div v-for="tenant in tenants" :key="tenant.name" class="tenant-div">
       <h1> {{ tenant.name }} </h1>
-      <img :src="tenant.image_path" alt="Tenant image">
-      <p> {{ tenant.burns }} </p>
+      <img :src="tenant.image_url" alt="Tenant image">
+      <p> {{ tenant.burn_count }} </p>
     </div>
   </div>
   <div v-else>
@@ -15,9 +15,13 @@
 import { defineComponent } from 'vue';
 
 interface Tenant {
+  id: number,
   name: string,
-  image_path: string,
-  burns: number,
+  age: number,
+  image_url: string,
+  burn_count: number,
+  dishwasher_count: number,
+  favorite_quote: string
 }
 
 export default defineComponent ({
