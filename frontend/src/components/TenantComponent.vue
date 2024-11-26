@@ -57,18 +57,18 @@ export default defineComponent ({
   .all-tenants-div {
     display: flex;
     gap: 20px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: space-evenly;
   }
   .tenant-div {
-    flex: 0 0 calc(22.00% - 20px);
+    flex: 0 0 calc(33.33% - 20px);
     background-color: lightcoral;
     padding: 20px;
     text-align: center;
     box-sizing: border-box; /* Include padding in width calculation */
   }
   .tenant-div img {
-    width: 100%;
+    width: 200px;
     height: 200px;
     object-fit: cover;
   }
