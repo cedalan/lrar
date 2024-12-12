@@ -1,6 +1,16 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    burn (id) {
+        id -> Int4,
+        reason -> Text,
+        receiver_id -> Int4,
+        giver_id -> Int4,
+        created_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     tenants (id) {
         id -> Int4,
         name -> Varchar,
@@ -11,3 +21,8 @@ diesel::table! {
         favorite_quote -> Nullable<Text>,
     }
 }
+
+diesel::allow_tables_to_appear_in_same_query!(
+    burn,
+    tenants,
+);
