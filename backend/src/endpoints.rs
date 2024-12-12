@@ -4,6 +4,7 @@ use crate::models::{Tenant, TenantResponse};
 use crate::schema::tenants::dsl::tenants;
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
+use crate::utils::get_weekly_chore;
 
 #[get("/tenants")]
 pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {

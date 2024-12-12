@@ -8,6 +8,7 @@ mod db;
 mod models;
 mod schema;
 mod endpoints;
+mod utils;
 
 use endpoints::get_tenants;
 
