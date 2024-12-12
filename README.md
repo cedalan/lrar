@@ -175,12 +175,3 @@ We welcome contributions to the l.r.a.r project. If you'd like to contribute, pl
 This project is licensed under the GNU General Public License v3.0.  
 You are free to redistribute and modify this project under the terms of the GNU GPL v3.  
 For more details, see the [official license text](https://www.gnu.org/licenses/gpl-3.0.html).
-
-```
-
-### Key Updates:
-1. **New Technologies Section**: Added a concise description of Vue, Rust, Actix Web, Diesel, and PostgreSQL.
-2. **Renumbered Sections**: Maintained consistent numbering to reflect added content.
-
-Let me know if you’d like further refinements!
-```
