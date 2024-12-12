@@ -25,9 +25,12 @@ pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
     // Base URL for images
     let base_url = "http://localhost:3001/images/";
 
+    let all_tenant_chores = get_weekly_chore();
+
     let response_data: Vec<TenantResponse> = tenants_data
         .into_iter()
-        .map(|tenant| TenantResponse {
+        .zip(all_tenant_chores.into_iter())
+        .map(|(tenant, weekly_chore)| TenantResponse {
             id: tenant.id,
             name: tenant.name,
             age: tenant.age,
@@ -38,6 +41,7 @@ pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
             burn_count: tenant.burn_count,
             dishwasher_count: tenant.dishwasher_count,
             favorite_quote: tenant.favorite_quote,
+            weekly_chore: weekly_chore,
         })
         .collect();
 

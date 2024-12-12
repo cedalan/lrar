@@ -35,4 +35,5 @@ pub struct TenantResponse {
     pub burn_count: Option<i32>,
     pub dishwasher_count: Option<i32>,
     pub favorite_quote: Option<String>,
+    pub weekly_chore: String,
 }
