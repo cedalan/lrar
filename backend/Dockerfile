@@ -1,22 +1,34 @@
 FROM rust:latest AS builder
 
-RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+RUN apt update \
+&& apt upgrade -y \
+&& apt install -y libpq-dev \
+&& rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+WORKDIR /lrar/backend
 
-COPY backend /app
+COPY backend /lrar/backend
 
-RUN cargo build --release
+RUN cargo install diesel_cli --no-default-features --features postgres
+
+RUN cargo build
 
 FROM debian:bookworm-slim
 
-RUN apt-get update && apt-get install -y libpq5 libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN apt update \
+&& apt upgrade -y \
+&& apt install -y libpq5 ca-certificates \
+&& rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+WORKDIR /lrar/backend
 
-COPY --from=builder /app/target/release/backend /app/backend_binary
+COPY --from=builder /lrar/backend/target/debug/backend ./backend_binary
 
-COPY backend/assets /app/backend/assets
+COPY --from=builder /usr/local/cargo/bin/diesel /usr/local/bin/diesel
+
+RUN mkdir -p /lrar/backend/migrations
+
+COPY backend/assets /lrar/backend/assets
 
 EXPOSE 3001
 
