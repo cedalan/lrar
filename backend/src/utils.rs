@@ -1,4 +1,4 @@
-use chrono::{Local, NaiveDate, Timelike, Utc};
+use chrono::{NaiveDate, Utc};
 
 pub fn get_weekly_chore() -> Vec<String> {
     let all_chores: Vec<String> = vec![
