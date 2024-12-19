@@ -5,6 +5,7 @@
       <img :src="tenant.image_url" alt="Tenant image">
       <p> Tatt ut av oppvaskmaskinen {{ tenant.dishwasher_count }} ganger </p>
       <p> Burns: {{ tenant.burn_count }} </p>
+      <p> Weekly chore: {{ tenant.weekly_chore.toLowerCase() }} </p>
       <p style="font-style:italic;">{{ tenant.favorite_quote }}</p>
     </div>
   </div>
@@ -24,6 +25,7 @@ interface Tenant {
   burn_count: number,
   dishwasher_count: number,
   favorite_quote: string
+  weekly_chore: string,
 }
 
 export default defineComponent ({
