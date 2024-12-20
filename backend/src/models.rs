@@ -1,3 +1,4 @@
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -41,4 +42,13 @@ pub struct TenantResponse {
 #[derive(Deserialize)]
 pub struct BurnRequest {
     pub id: i32,
+}
+
+#[derive(Serialize)]
+pub struct BurnResponse {
+    pub id: i32,
+    pub reason: String,
+    pub reciever_name: String,
+    pub giver_name: String,
+    pub created_at: NaiveDateTime, // Renamed field
 }
