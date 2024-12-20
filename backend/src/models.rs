@@ -37,3 +37,8 @@ pub struct TenantResponse {
     pub favorite_quote: Option<String>,
     pub weekly_chore: String,
 }
+
+#[derive(Deserialize)]
+pub struct BurnRequest {
+    pub id: i32,
+}
