@@ -2,7 +2,7 @@ use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::schema::tenants;
+use crate::schema::{tenants, burn};
 
 #[derive(Queryable, Selectable, Serialize)]
 #[diesel(table_name = tenants)]
@@ -39,6 +39,16 @@ pub struct TenantResponse {
     pub weekly_chore: String,
 }
 
+#[derive(Queryable, Selectable, Serialize)]
+#[diesel(table_name = burn)]
+pub struct Burn {
+    pub id: i32,
+    pub reason: String,
+    pub receiver_id: i32,
+    pub giver_id: i32,
+    pub created_at: NaiveDateTime,
+}
+
 #[derive(Deserialize)]
 pub struct BurnRequest {
     pub id: i32,
@@ -48,7 +58,7 @@ pub struct BurnRequest {
 pub struct BurnResponse {
     pub id: i32,
     pub reason: String,
-    pub reciever_name: String,
+    pub receiver_name: String,
     pub giver_name: String,
     pub created_at: NaiveDateTime, // Renamed field
 }
