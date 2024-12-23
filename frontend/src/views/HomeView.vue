@@ -1,9 +1,0 @@
-<script setup lang="ts">
-import HomePage from "../../src/components/HomePage.vue";
-</script>
-
-<template>
-  <main>
-    <HomePage />
-  </main>
-</template>

@@ -7,8 +7,19 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/frontend/src
+      - ./frontend/index.html:/frontend/index.html
+      - ./frontend/package.json:/frontend/package.json
+      - ./frontend/package-lock.json:/frontend/package-lock.json
+
+      - ./frontend/tsconfig.app.json:/frontend/tsconfig.app.json
+      - ./frontend/tsconfig.json:/frontend/tsconfig.json
+      - ./frontend/tsconfig.node.json:/frontend/tsconfig.node.json
+      - ./frontend/tsconfig.vitest.json:/frontend/tsconfig.vitest.json
+      - ./frontend/vite.config.ts:/frontend/vite.config.ts
+      - ./frontend/vitest.config.ts:/frontend/vitest.config.ts
+
+      - node_modules_volume:/frontend/node_modules
     networks:
       - app-network
 
@@ -52,6 +63,7 @@ services:
 
 volumes:
   db-data:
+  node_modules_volume:
 
 networks:
   app-network:

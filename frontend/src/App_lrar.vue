@@ -1,5 +1,4 @@
 <script setup>
-   //import { TenantComponent } from '@/components/views/TenantComponent.vue';
     import TenantView from '@/views/TenantView.vue';
 </script>
 <template>
