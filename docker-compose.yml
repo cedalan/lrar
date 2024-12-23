@@ -15,9 +15,7 @@ services:
       - ./frontend/tsconfig.app.json:/frontend/tsconfig.app.json
       - ./frontend/tsconfig.json:/frontend/tsconfig.json
       - ./frontend/tsconfig.node.json:/frontend/tsconfig.node.json
-      - ./frontend/tsconfig.vitest.json:/frontend/tsconfig.vitest.json
       - ./frontend/vite.config.ts:/frontend/vite.config.ts
-      - ./frontend/vitest.config.ts:/frontend/vitest.config.ts
 
       - node_modules_volume:/frontend/node_modules
     networks:
