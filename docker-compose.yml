@@ -3,7 +3,7 @@ services:
     container_name: lrar_frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - "5173:5173"
     volumes:
