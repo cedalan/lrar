@@ -7,7 +7,6 @@
     "dev": "vite --config ./config/vite.config.ts"
   },
   "dependencies": {
-    "pinia": "^2.1.7",
     "vue": "^3.4.29"
   },
   "devDependencies": {
