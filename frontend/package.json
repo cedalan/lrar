@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite"
+    "dev": "vite --config ./config/vite.config.ts"
   },
   "dependencies": {
     "pinia": "^2.1.7",
