@@ -10,18 +10,10 @@
     "vue": "^3.4.29"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.8.0",
     "@tsconfig/node20": "^20.1.4",
-    "@types/jsdom": "^21.1.7",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.0.5",
-    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.17.0",
-    "eslint-plugin-vue": "^9.23.0",
-    "jsdom": "^25.0.1",
-    "npm-run-all2": "^7.0.2",
-    "prettier": "^3.2.5",
     "typescript": "^5.7.2",
     "vite": "^6.0.5",
     "vue-tsc": "^2.0.21"
