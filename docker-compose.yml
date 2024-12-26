@@ -3,12 +3,18 @@ services:
     container_name: lrar_frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - "5173:5173"
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/config:/frontend/config
+      - ./frontend/src:/frontend/src
+
+      - ./frontend/index.html:/frontend/index.html
+      - ./frontend/package.json:/frontend/package.json
+      - ./frontend/package-lock.json:/frontend/package-lock.json
+
+      - node_modules_volume:/frontend/node_modules
     networks:
       - app-network
 
@@ -52,6 +58,7 @@ services:
 
 volumes:
   db-data:
+  node_modules_volume:
 
 networks:
   app-network:
