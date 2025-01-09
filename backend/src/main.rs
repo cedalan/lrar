@@ -10,7 +10,7 @@ mod schema;
 mod endpoints;
 mod utils;
 
-use endpoints::get_tenants;
+use endpoints::{get_tenants, get_tenant_burns};
 
 const PORT: u16 = 3001;
 
@@ -41,6 +41,7 @@ async fn main() -> std::io::Result<()> {
             )
             .route("/", web::get().to(hello))
             .service(get_tenants)
+            .service(get_tenant_burns)
     })
     .bind(format!("0.0.0.0:{}", PORT))?
     .run()

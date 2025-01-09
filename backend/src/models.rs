@@ -58,7 +58,9 @@ pub struct BurnRequest {
 pub struct BurnResponse {
     pub id: i32,
     pub reason: String,
-    pub receiver_name: String,
-    pub giver_name: String,
+    //pub receiver_name: String,
+    //pub giver_name: String,
+    pub receiver_id: i32,
+    pub giver_id: i32,
     pub created_at: NaiveDateTime, // Renamed field
 }
