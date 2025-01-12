@@ -49,18 +49,11 @@ pub struct Burn {
     pub created_at: NaiveDateTime,
 }
 
-#[derive(Deserialize)]
-pub struct BurnRequest {
-    pub id: i32,
-}
-
 #[derive(Serialize)]
 pub struct BurnResponse {
     pub id: i32,
     pub reason: String,
-    //pub receiver_name: String,
-    //pub giver_name: String,
-    pub receiver_id: i32,
-    pub giver_id: i32,
-    pub created_at: NaiveDateTime, // Renamed field
+    pub receiver_name: String,
+    pub giver_name: String,
+    pub created_at: NaiveDateTime,
 }

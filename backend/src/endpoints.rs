@@ -1,11 +1,11 @@
-use actix_web::{web, get, post, HttpResponse, Error};
+use actix_web::{web, get, HttpResponse, Error};
 use crate::db::DbPool;
-use crate::models::{Tenant, TenantResponse, Burn, BurnRequest, BurnResponse};
+use crate::models::{Tenant, TenantResponse, Burn, BurnResponse};
 use crate::schema::tenants::dsl::tenants;
 use crate::schema::burn::dsl::*;
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
-use crate::utils::get_weekly_chore;
+use crate::utils::{get_weekly_chore, id_to_name};
 
 #[get("/tenants")]
 pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
@@ -49,15 +49,31 @@ pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
     Ok(HttpResponse::Ok().json(response_data))
 }
 
-#[post("/tenant_burns")]
-pub async fn get_tenant_burns(burn_request: web::Json<BurnRequest>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
-    println!("Received request with id: {}", burn_request.id);
-    let burn_receiver_id = burn_request.id;
+#[get("/tenants/{tenant_id}/burns")]
+pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    let tenant_id = tenant_id.into_inner();
+    println!("Received request with id test: {}", tenant_id);
+
+    let pool_clone = pool.clone();
 
     let burn_data = web::block(move || {
         let mut conn = pool.get().expect("Failed to get DB connection");
-        burn.filter(receiver_id.eq(burn_receiver_id))
+        burn.filter(receiver_id.eq(tenant_id))
         .load::<Burn>(&mut conn)
+    })
+    .await
+    .map_err(|e| {
+        eprintln!("Blocking error: {:?}", e);
+        ErrorInternalServerError("Error during blocking operation")
+    })?
+    .map_err(|e| {
+        eprintln!("Database error: {:?}", e);
+        ErrorInternalServerError("Error querying the database")
+    })?;
+
+    let tenants_data = web::block(move || {
+        let mut conn = pool_clone.get().expect("Failed to get DB connection");
+        tenants.load::<Tenant>(&mut conn)
     })
     .await
     .map_err(|e| {
@@ -80,8 +96,8 @@ pub async fn get_tenant_burns(burn_request: web::Json<BurnRequest>, pool: web::D
         response_data.push(BurnResponse {
             id: burn_.id,
             reason: burn_.reason,
-            receiver_id: burn_.receiver_id,
-            giver_id: burn_.giver_id,
+            receiver_name: id_to_name(burn_.receiver_id, &tenants_data).await,
+            giver_name: id_to_name(burn_.giver_id, &tenants_data).await,
             created_at: burn_.created_at,
         });
     }
