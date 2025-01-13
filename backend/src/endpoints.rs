@@ -1,10 +1,30 @@
-use actix_web::{web, get, HttpResponse, Error};
+use actix_web::{web, get, HttpResponse, Error, post};
 use crate::db::DbPool;
-use crate::models::{Tenant, TenantResponse};
+use crate::models::{BurnDto, Tenant, TenantResponse};
 use crate::schema::tenants::dsl::tenants;
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
-use crate::utils::get_weekly_chore;
+use crate::utils::{get_weekly_chore, insert_new_burn};
+
+
+#[post("/burn")]
+pub async fn create_burn(pool: web::Data<DbPool>, new_burn: web::Json<BurnDto>) -> Result<HttpResponse, Error> {
+     let new_burn = web::block (move || {
+        let mut conn = pool.get().expect("failed to get db connection from pool");
+        insert_new_burn(&mut conn, new_burn.into_inner())
+    }).await
+        .map_err(|e| {
+            eprintln!("Blocking error: {:?}", e);
+            ErrorInternalServerError("Error during blocking operation")
+        })
+        .map_err(|e| {
+            eprintln!("Database error: {:?}", e);
+            ErrorInternalServerError("Error querying the database")
+        })?;
+    let result = new_burn.unwrap();
+    Ok(HttpResponse::Ok().json(result))
+}
+
 
 #[get("/tenants")]
 pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {

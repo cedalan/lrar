@@ -1,4 +1,6 @@
 use chrono::{NaiveDate, Utc};
+use diesel::{PgConnection, RunQueryDsl};
+use crate::models::{Burn, BurnDto};
 
 pub fn get_weekly_chore() -> Vec<String> {
     let all_chores: Vec<String> = vec![
@@ -31,4 +33,18 @@ pub fn get_weekly_chore() -> Vec<String> {
         .collect();
 
     return rotated_chores;
+}
+
+pub fn insert_new_burn(
+    conn: &mut PgConnection,
+    new_burn: BurnDto,
+) -> diesel::QueryResult<Burn> {
+    use crate::schema::burn::dsl::*;
+
+    let query_result = diesel::insert_into(burn)
+        .values(new_burn)
+        .get_result(conn)
+        .expect("Error inserting burn");
+
+    Ok(query_result)
 }
