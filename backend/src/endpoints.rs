@@ -1,4 +1,4 @@
-use actix_web::{web, get, HttpResponse, Error};
+use actix_web::{web, get, HttpResponse, HttpRequest, Error};
 use crate::db::DbPool;
 use crate::models::{Tenant, TenantResponse, Burn, BurnResponse};
 use crate::schema::tenants::dsl::tenants;
@@ -50,9 +50,22 @@ pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
 }
 
 #[get("/tenants/{tenant_id}/burns")]
-pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>, req: HttpRequest) -> Result<HttpResponse, Error> {
     let tenant_id = tenant_id.into_inner();
     println!("Received request with id test: {}", tenant_id);
+
+    if let Some(content_type) = req.headers().get("Content-type") {
+        let content_type_str = content_type.to_str().unwrap_or("");
+        if content_type_str != "application/json" {
+            return Ok(HttpResponse::UnsupportedMediaType().json(serde_json::json!({
+                "error": "Content type must be application/json"
+            })));
+        }
+    } else {
+        return Ok(HttpResponse::BadRequest().json(serde_json::json!({
+            "error": "Content type header is missing!"
+        })))
+    }
 
     let pool_clone = pool.clone();
 
@@ -87,11 +100,14 @@ pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>
 
     println!("Fetched burn data with length {}", burn_data.len());
 
+    println!("Before checking burn_data length");
     if burn_data.is_empty() {
-        return Ok(HttpResponse::NoContent().json(serde_json::json!({
-            "error": "Not burn data found for that user!"
+        println!("burn_data is empty!");
+        return Ok(HttpResponse::NotFound().json(serde_json::json!({
+            "error": "No burn data found for that user!"
         })));
     }
+    println!("After checking burn_data length");
 
     let mut response_data = Vec::new();
     for burn_ in burn_data {
