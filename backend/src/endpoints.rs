@@ -1,7 +1,7 @@
 use actix_web::{web, get, HttpResponse, HttpRequest, Error};
 use crate::db::DbPool;
 use crate::models::{Tenant, TenantResponse, Burn, BurnResponse};
-use crate::schema::tenants::dsl::tenants;
+use crate::schema::tenants::dsl::{tenants, id as tenant_id_column};
 use crate::schema::burn::dsl::*;
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
@@ -67,12 +67,35 @@ pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>
         })))
     }
 
-    let pool_clone = pool.clone();
+    let tenant_exists = web::block({
+        let pool_clone = pool.clone(); // Clone here for this closure
+        move || {
+            let mut conn = pool_clone.get().expect("Failed to get DB connection");
+            tenants.filter(tenant_id_column.eq(tenant_id)).first::<Tenant>(&mut conn).optional()
+        }
+    })
+    .await
+    .map_err(|e| {
+        eprintln!("Blocking error: {:?}", e);
+        ErrorInternalServerError("Error during blocking operation")
+    })?
+    .map_err(|e| {
+        eprintln!("Database error: {:?}", e);
+        ErrorInternalServerError("Error querying the database")
+    })?;
 
-    let burn_data = web::block(move || {
-        let mut conn = pool.get().expect("Failed to get DB connection");
-        burn.filter(receiver_id.eq(tenant_id))
-        .load::<Burn>(&mut conn)
+    if tenant_exists.is_none() {
+        return Ok(HttpResponse::NotFound().json(serde_json::json!({
+            "error": "Tenant not found!"
+        })));
+    }
+
+    let burn_data = web::block({
+        let pool_clone = pool.clone(); // Clone here for this closure
+        move || {
+            let mut conn = pool_clone.get().expect("Failed to get DB connection");
+            burn.filter(receiver_id.eq(tenant_id)).load::<Burn>(&mut conn)
+        }
     })
     .await
     .map_err(|e| {
@@ -85,7 +108,7 @@ pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>
     })?;
 
     let tenants_data = web::block(move || {
-        let mut conn = pool_clone.get().expect("Failed to get DB connection");
+        let mut conn = pool.get().expect("Failed to get DB connection");
         tenants.load::<Tenant>(&mut conn)
     })
     .await
