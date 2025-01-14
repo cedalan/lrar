@@ -100,14 +100,11 @@ pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>
 
     println!("Fetched burn data with length {}", burn_data.len());
 
-    println!("Before checking burn_data length");
     if burn_data.is_empty() {
-        println!("burn_data is empty!");
         return Ok(HttpResponse::NotFound().json(serde_json::json!({
             "error": "No burn data found for that user!"
         })));
     }
-    println!("After checking burn_data length");
 
     let mut response_data = Vec::new();
     for burn_ in burn_data {
