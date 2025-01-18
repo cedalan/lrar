@@ -54,19 +54,6 @@ pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>
     let tenant_id = tenant_id.into_inner();
     println!("Received request with id test: {}", tenant_id);
 
-    if let Some(content_type) = req.headers().get("Content-type") {
-        let content_type_str = content_type.to_str().unwrap_or("");
-        if content_type_str != "application/json" {
-            return Ok(HttpResponse::UnsupportedMediaType().json(serde_json::json!({
-                "error": "Content type must be application/json"
-            })));
-        }
-    } else {
-        return Ok(HttpResponse::BadRequest().json(serde_json::json!({
-            "error": "Content type header is missing!"
-        })))
-    }
-
     let tenant_exists = web::block({
         let pool_clone = pool.clone(); // Clone here for this closure
         move || {
