@@ -1,4 +1,4 @@
-use actix_web::{web, get, HttpResponse, HttpRequest, Error};
+use actix_web::{web, get, HttpResponse, Error};
 use crate::db::DbPool;
 use crate::models::{Tenant, TenantResponse, Burn, BurnResponse};
 use crate::schema::tenants::dsl::{tenants, id as tenant_id_column};
@@ -50,7 +50,7 @@ pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
 }
 
 #[get("/tenants/{tenant_id}/burns")]
-pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>, req: HttpRequest) -> Result<HttpResponse, Error> {
+pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
     let tenant_id = tenant_id.into_inner();
     println!("Received request with id test: {}", tenant_id);
 
