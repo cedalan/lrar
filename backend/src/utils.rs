@@ -1,4 +1,5 @@
 use chrono::{NaiveDate, Utc};
+use crate::models::Tenant;
 
 pub fn get_weekly_chore() -> Vec<String> {
     let all_chores: Vec<String> = vec![
@@ -31,4 +32,14 @@ pub fn get_weekly_chore() -> Vec<String> {
         .collect();
 
     return rotated_chores;
+}
+
+pub async fn id_to_name(tenant_id: i32, tenants: &[Tenant]) -> String {
+    for tenant in tenants {
+        if tenant_id == tenant.id {
+            println!("Input tenant id: {}, Found tenant id: {}", tenant_id, tenant.id);
+            return tenant.name.clone().to_string();
+        }
+    }
+    return "No name found for that user".to_string();
 }
