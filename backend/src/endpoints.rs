@@ -55,7 +55,7 @@ pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>
     println!("Received request with id test: {}", tenant_id);
 
     let tenant_exists = web::block({
-        let pool_clone = pool.clone(); // Clone here for this closure
+        let pool_clone = pool.clone();
         move || {
             let mut conn = pool_clone.get().expect("Failed to get DB connection");
             tenants.filter(tenant_id_column.eq(tenant_id)).first::<Tenant>(&mut conn).optional()
@@ -78,7 +78,7 @@ pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>
     }
 
     let burn_data = web::block({
-        let pool_clone = pool.clone(); // Clone here for this closure
+        let pool_clone = pool.clone();
         move || {
             let mut conn = pool_clone.get().expect("Failed to get DB connection");
             burn.filter(receiver_id.eq(tenant_id)).load::<Burn>(&mut conn)
@@ -129,5 +129,8 @@ pub async fn get_tenant_burns(tenant_id: web::Path<i32>, pool: web::Data<DbPool>
 
     println!("Converted to Burnresponse with length {}", response_data.len());
 
-    Ok(HttpResponse::Ok().json(response_data))
+    Ok(HttpResponse::Ok().json(serde_json::json!({
+        "count": response_data.len(),
+        "data": response_data,
+    })))
 }
