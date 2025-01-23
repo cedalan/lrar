@@ -1,8 +1,9 @@
-use std::time::SystemTime;
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::schema::burn;
-use crate::schema::tenants;
+
+use crate::schema::{tenants, burn};
+
 #[derive(Queryable, Selectable, Serialize)]
 #[diesel(table_name = tenants)]
 pub struct Tenant {
@@ -45,8 +46,18 @@ pub struct Burn {
     pub reason: String,
     pub receiver_id: i32,
     pub giver_id: i32,
-    pub created_at: SystemTime,
+    pub created_at: NaiveDateTime,
 }
+
+#[derive(Serialize)]
+pub struct BurnResponse {
+    pub id: i32,
+    pub reason: String,
+    pub receiver_name: String,
+    pub giver_name: String,
+    pub created_at: NaiveDateTime,
+}
+
 
 #[derive(Serialize, Deserialize, Insertable)]
 #[diesel(table_name = burn)]
