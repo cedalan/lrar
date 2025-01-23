@@ -1,11 +1,11 @@
 use actix_web::{web, get, HttpResponse, Error, post};
 use crate::db::DbPool;
-use crate::models::{Tenant, TenantResponse, Burn, BurnResponse};
+use crate::models::{Tenant, TenantResponse, Burn, BurnResponse, BurnDto};
 use crate::schema::tenants::dsl::{tenants, id as tenant_id_column};
 use crate::schema::burn::dsl::*;
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
-use crate::utils::{get_weekly_chore, insert_new_burn};
+use crate::utils::{get_weekly_chore, insert_new_burn, id_to_name};
 
 
 #[post("/burn")]
@@ -26,7 +26,6 @@ pub async fn create_burn(pool: web::Data<DbPool>, new_burn: web::Json<BurnDto>) 
     Ok(HttpResponse::Ok().json(result))
 }
 
-use crate::utils::{get_weekly_chore, id_to_name};
 
 #[get("/tenants")]
 pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {

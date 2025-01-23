@@ -66,5 +66,5 @@ pub struct BurnDto {
     pub reason: String,
     pub receiver_id: i32,
     pub giver_id: i32,
-    pub created_at: SystemTime,
+    pub created_at: NaiveDateTime,
 }
