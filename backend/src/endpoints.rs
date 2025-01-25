@@ -10,6 +10,7 @@ use crate::utils::{get_weekly_chore, insert_new_burn, id_to_name};
 
 #[post("/burn")]
 pub async fn create_burn(pool: web::Data<DbPool>, new_burn: web::Json<BurnDto>) -> Result<HttpResponse, Error> {
+    println!("Request received for create_burn: {:?}", new_burn);
      let new_burn = web::block (move || {
         let mut conn = pool.get().expect("failed to get db connection from pool");
         insert_new_burn(&mut conn, new_burn.into_inner())
@@ -22,7 +23,9 @@ pub async fn create_burn(pool: web::Data<DbPool>, new_burn: web::Json<BurnDto>) 
             eprintln!("Database error: {:?}", e);
             ErrorInternalServerError("Error querying the database")
         })?;
+    println!("Sucessfully inserted?");
     let result = new_burn.unwrap();
+    println!("Burn successfully inserted: {:?}", result);
     Ok(HttpResponse::Ok().json(result))
 }
 
