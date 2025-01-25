@@ -39,7 +39,7 @@ pub struct TenantResponse {
     pub weekly_chore: String,
 }
 
-#[derive(Queryable, Selectable, Serialize)]
+#[derive(Queryable, Selectable, Serialize, Debug)]
 #[diesel(table_name = burn)]
 pub struct Burn {
     pub id: i32,
@@ -55,5 +55,16 @@ pub struct BurnResponse {
     pub reason: String,
     pub receiver_name: String,
     pub giver_name: String,
+    pub created_at: NaiveDateTime,
+}
+
+
+#[derive(Serialize, Deserialize, Insertable, Debug)]
+#[diesel(table_name = burn)]
+pub struct BurnDto {
+    pub id: Option<i32>,
+    pub reason: String,
+    pub receiver_id: i32,
+    pub giver_id: i32,
     pub created_at: NaiveDateTime,
 }
