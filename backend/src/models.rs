@@ -16,7 +16,7 @@ pub struct Tenant {
     pub favorite_quote: Option<String>,
 }
 
-#[derive(Insertable, Deserialize)]
+#[derive(Insertable, Deserialize, Debug)]
 #[diesel(table_name = tenants)]
 pub struct NewTenant {
     pub name: String,
