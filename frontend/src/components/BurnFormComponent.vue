@@ -32,16 +32,16 @@
     data() {
       return {
         reason: "",
-        giver_id: null, // User manually enters their giver_id
+        giver_id: null
       };
     },
     methods: {
       async submitBurn() {
         const burnData = {
           reason: this.reason,
-          receiver_id: this.receiver.id, // Selected tenant's ID
-          giver_id: this.giver_id, // Entered manually by user
-          created_at: new Date().toISOString().slice(0, 19), // Auto-generated
+          receiver_id: this.receiver.id,
+          giver_id: this.giver_id,
+          created_at: new Date().toISOString().slice(0, 19), // Slice Milliseconds. Might be a better way to do this
         };
 
         console.log(burnData);
@@ -61,7 +61,7 @@
           }
   
           alert("Burn submitted successfully!");
-          this.$emit("close"); // Close the form after submission
+          this.$emit("close"); 
         } catch (error) {
           console.error(error);
         }
