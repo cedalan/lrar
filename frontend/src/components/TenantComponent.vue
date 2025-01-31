@@ -7,15 +7,25 @@
       <p> Burns: {{ tenant.burn_count }} </p>
       <p> Weekly chore: {{ tenant.weekly_chore.toLowerCase() }} </p>
       <p style="font-style:italic;">{{ tenant.favorite_quote }}</p>
+      <button @click="openBurnForm(tenant)">Give Burn</button>
     </div>
   </div>
+
   <div v-else>
     <p>Error</p>
   </div>
+
+  <BurnFormComponent 
+    v-if="selectedTenant"
+    :receiver="selectedTenant"
+    @close="selectedTenant = null"
+  />
+
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import BurnFormComponent from '@/components/BurnFormComponent.vue';
 
 interface Tenant {
   id: number,
@@ -30,9 +40,13 @@ interface Tenant {
 
 export default defineComponent ({
   name: "TenantComponent",
+  components: {
+    BurnFormComponent,
+  },
   data() {
     return {
       tenants: [] as Tenant[],
+      selectedTenant: null as Tenant | null,
     };
   },
   async created() {
@@ -52,6 +66,11 @@ export default defineComponent ({
       console.error("Error fetching tenant data:", error);
     }
   },
+  methods: {
+    openBurnForm(tenant: Tenant) {
+      this.selectedTenant = tenant;
+    },
+  }
 });
 </script>
 
