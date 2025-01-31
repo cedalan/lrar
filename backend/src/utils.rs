@@ -1,6 +1,6 @@
 use chrono::{NaiveDate, Utc};
 use diesel::{PgConnection, RunQueryDsl};
-use crate::models::{Burn, BurnDto};
+use crate::models::{Burn, BurnDto, NewTenant};
 use crate::models::Tenant;
 
 pub fn get_weekly_chore() -> Vec<String> {
@@ -11,6 +11,10 @@ pub fn get_weekly_chore() -> Vec<String> {
         "Clean the hallway".to_string(),
         "Clean the living room".to_string(),
         "Take out all trash".to_string(),
+        "Bruh this is so stupid1".to_string(),
+        "Bruh this is so stupid2".to_string(),
+        "Bruh this is so stupid3".to_string(),
+        "Bruh this is so stupid4".to_string(),
     ];
 
     //Arbritrary start date
@@ -48,6 +52,26 @@ pub fn insert_new_burn(
         .expect("Error inserting burn");
 
     Ok(query_result)
+}
+
+pub fn insert_new_tenant(
+    conn: &mut PgConnection,
+    new_tenant: NewTenant,
+) -> diesel::QueryResult<Tenant> {
+    use crate::schema::tenants::dsl::*;
+
+    println!("Inserting new tenant: {:?}", new_tenant); // Debug output
+
+    let query_result = diesel::insert_into(tenants)
+        .values(new_tenant)
+        .get_result(conn);
+
+    match &query_result {
+        Ok(tenant) => println!("Successfully inserted tenant: {:?}", tenant),
+        Err(e) => eprintln!("Error inserting tenant: {:?}", e),
+    }
+
+    query_result
 }
 
 pub async fn id_to_name(tenant_id: i32, tenants: &[Tenant]) -> String {

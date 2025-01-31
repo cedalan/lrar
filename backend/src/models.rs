@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::schema::{tenants, burn};
 
-#[derive(Queryable, Selectable, Serialize)]
+#[derive(Queryable, Selectable, Serialize, Debug)]
 #[diesel(table_name = tenants)]
 pub struct Tenant {
     pub id: i32,
@@ -16,7 +16,7 @@ pub struct Tenant {
     pub favorite_quote: Option<String>,
 }
 
-#[derive(Insertable, Deserialize, Debug)]
+#[derive(Insertable, Serialize, Deserialize, Debug)]
 #[diesel(table_name = tenants)]
 pub struct NewTenant {
     pub name: String,
