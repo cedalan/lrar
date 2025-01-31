@@ -11,10 +11,6 @@ pub fn get_weekly_chore() -> Vec<String> {
         "Clean the hallway".to_string(),
         "Clean the living room".to_string(),
         "Take out all trash".to_string(),
-        "Bruh this is so stupid1".to_string(),
-        "Bruh this is so stupid2".to_string(),
-        "Bruh this is so stupid3".to_string(),
-        "Bruh this is so stupid4".to_string(),
     ];
 
     //Arbritrary start date
