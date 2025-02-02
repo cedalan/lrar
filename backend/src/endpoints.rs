@@ -1,11 +1,11 @@
 use actix_web::{web, get, HttpResponse, Error, post};
 use crate::db::DbPool;
-use crate::models::{Tenant, TenantResponse, Burn, BurnResponse, BurnDto};
+use crate::models::{Burn, BurnDto, BurnResponse, NewTenant, Tenant, TenantResponse};
 use crate::schema::tenants::dsl::{tenants, id as tenant_id_column};
 use crate::schema::burn::dsl::*;
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
-use crate::utils::{get_weekly_chore, insert_new_burn, id_to_name};
+use crate::utils::{get_weekly_chore, id_to_name, insert_new_burn, insert_new_tenant};
 
 
 #[post("/burn")]
@@ -29,6 +29,28 @@ pub async fn create_burn(pool: web::Data<DbPool>, new_burn: web::Json<BurnDto>) 
     Ok(HttpResponse::Ok().json(result))
 }
 
+#[post("/tenant")]
+pub async fn create_tenant(pool: web::Data<DbPool>, new_tenant: web::Json<NewTenant>) -> Result<HttpResponse, Error> {
+    println!("Request recieved for create_tenant: {:?}", new_tenant);
+    let new_tenant = web::block(move || {
+        let mut conn = pool.get().expect("Failed to get DB connection from pool");
+        insert_new_tenant(&mut conn, new_tenant.into_inner())
+    }).await
+    .map_err(|e| {
+        eprintln!("Blocking error: {:?}", e);
+        ErrorInternalServerError("Error during blocking operation")
+    })
+    .map_err(|e| {
+        eprintln!("Database error: {:?}", e);
+        ErrorInternalServerError("Error querying the database")
+    })?;
+
+    let result = new_tenant.unwrap();
+    println!("Tenant successfully inserted: {:?}", result);
+
+    Ok(HttpResponse::Ok().json(result))
+}
+
 
 #[get("/tenants")]
 pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
@@ -49,7 +71,14 @@ pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
     // Base URL for images
     let base_url = "http://localhost:3001/images/";
 
-    let all_tenant_chores = get_weekly_chore();
+    let mut all_tenant_chores = get_weekly_chore();
+
+    if tenants_data.len() > all_tenant_chores.len() {
+        println!("Number of chores are less than the number of tenants. Adding empty chroe to avoid truncation");
+        for _ in 0..(tenants_data.len() - all_tenant_chores.len()) {
+            all_tenant_chores.push("Nothing".to_string());
+        }
+    } 
 
     let response_data: Vec<TenantResponse> = tenants_data
         .into_iter()

@@ -10,7 +10,7 @@ mod schema;
 mod endpoints;
 mod utils;
 
-use endpoints::{create_burn, get_tenant_burns, get_tenants};
+use endpoints::{create_burn, create_tenant, get_tenant_burns, get_tenants};
 
 const PORT: u16 = 3001;
 
@@ -43,6 +43,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_tenants)
             .service(get_tenant_burns)
             .service(create_burn)
+            .service(create_tenant)
     })
     .bind(format!("0.0.0.0:{}", PORT))?
     .run()
