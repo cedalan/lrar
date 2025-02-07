@@ -1,11 +1,11 @@
 use actix_web::{web, get, HttpResponse, Error, post};
 use crate::db::DbPool;
-use crate::models::{Burn, BurnDto, BurnResponse, NewTenant, Tenant, TenantResponse};
+use crate::models::{Burn, BurnDto, BurnResponse, NewNote, NewTenant, Tenant, TenantResponse};
 use crate::schema::tenants::dsl::{tenants, id as tenant_id_column};
 use crate::schema::burn::dsl::*;
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
-use crate::utils::{get_weekly_chore, id_to_name, insert_new_burn, insert_new_tenant};
+use crate::utils::{get_weekly_chore, id_to_name, insert_new_burn, insert_new_tenant, insert_new_note};
 
 
 #[post("/burn")]
@@ -51,6 +51,27 @@ pub async fn create_tenant(pool: web::Data<DbPool>, new_tenant: web::Json<NewTen
     Ok(HttpResponse::Ok().json(result))
 }
 
+#[post("notes")]
+pub async fn create_note(pool: web::Data<DbPool>, new_note: web::Json<NewNote>) -> Result<HttpResponse, Error> {
+    println!("Request recieved for create_note: {:?}", new_note);
+    let new_note = web::block(move || {
+        let mut conn = pool.get().expect("Failed to get DB connection from pool");
+        insert_new_note(&mut conn, new_note.into_inner())
+    }).await
+    .map_err(|e| {
+        eprintln!("Blocking error: {:?}", e);
+        ErrorInternalServerError("Error during blocking operation")
+    })
+    .map_err(|e| {
+        eprintln!("Database error: {:?}", e);
+        ErrorInternalServerError("Error querying the database")
+    })?;
+
+    let result = new_note.unwrap();
+    println!("Note successfully inserted: {:?}", result);
+
+    Ok(HttpResponse::Ok().json(result))
+}
 
 #[get("/tenants")]
 pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
