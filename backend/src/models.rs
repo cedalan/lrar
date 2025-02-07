@@ -12,7 +12,7 @@ pub struct Note {
     pub created_at: NaiveDateTime,
 }
 
-#[derive(Queryable, Selectable, Serialize, Debug)]
+#[derive(Insertable, Selectable, Serialize, Debug)]
 #[diesel(table_name = notes)]
 pub struct NewNote {
     pub message: String,
