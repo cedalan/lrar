@@ -2,7 +2,21 @@ use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::schema::{tenants, burn};
+use crate::schema::{tenants, burn, notes};
+
+#[derive(Queryable, Selectable, Serialize, Debug)]
+#[diesel(table_name = notes)]
+pub struct Note {
+    pub id: i32,
+    pub message: String,
+    pub created_at: NaiveDateTime,
+}
+
+#[derive(Queryable, Selectable, Serialize, Debug)]
+#[diesel(table_name = notes)]
+pub struct NewNote {
+    pub message: String,
+}
 
 #[derive(Queryable, Selectable, Serialize, Debug)]
 #[diesel(table_name = tenants)]
