@@ -1,6 +1,6 @@
 use chrono::{NaiveDate, Utc};
 use diesel::{PgConnection, RunQueryDsl};
-use crate::models::{Burn, BurnDto, NewTenant};
+use crate::models::{Burn, BurnDto, NewTenant, Note, NewNote};
 use crate::models::Tenant;
 
 pub fn get_weekly_chore() -> Vec<String> {
@@ -34,6 +34,17 @@ pub fn get_weekly_chore() -> Vec<String> {
         .collect();
 
     return rotated_chores;
+}
+
+pub fn insert_new_note(
+    conn: &mut PgConnection,
+    new_note: NewNote,
+) -> diesel::QueryResult<Note> {
+    use crate::schema::notes::dsl::*;
+
+    diesel::insert_into(notes)
+        .values(new_note)
+        .get_result(conn)
 }
 
 pub fn insert_new_burn(
