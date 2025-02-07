@@ -51,7 +51,7 @@ pub async fn create_tenant(pool: web::Data<DbPool>, new_tenant: web::Json<NewTen
     Ok(HttpResponse::Ok().json(result))
 }
 
-#[post("notes")]
+#[post("note")]
 pub async fn create_note(pool: web::Data<DbPool>, new_note: web::Json<NewNote>) -> Result<HttpResponse, Error> {
     println!("Request recieved for create_note: {:?}", new_note);
     let new_note = web::block(move || {
