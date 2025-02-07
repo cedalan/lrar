@@ -11,6 +11,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    notes (id) {
+        id -> Int4,
+        message -> Text,
+        created_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     tenants (id) {
         id -> Int4,
         name -> Varchar,
@@ -24,5 +32,6 @@ diesel::table! {
 
 diesel::allow_tables_to_appear_in_same_query!(
     burn,
+    notes,
     tenants,
 );
