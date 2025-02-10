@@ -95,6 +95,10 @@ pub async fn get_notes(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
         ErrorInternalServerError("Error querying the database")
     })?;
 
+    if notes_data.len() < 1 {
+        return Ok(HttpResponse::NoContent().json(serde_json::json!({"error": "No notes were found"})));
+    }
+
     Ok(HttpResponse::Ok().json(notes_data))
 }
 
