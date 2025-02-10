@@ -55,6 +55,11 @@ pub async fn create_tenant(pool: web::Data<DbPool>, new_tenant: web::Json<NewTen
 #[post("/note")]
 pub async fn create_note(pool: web::Data<DbPool>, new_note: web::Json<NewNote>) -> Result<HttpResponse, Error> {
     println!("Request recieved for create_note: {:?}", new_note);
+
+    if new_note.message.is_empty() {
+        return Ok(HttpResponse::BadRequest().json(serde_json::json!({"error": "message cannot be empty"})));
+    }
+
     let new_note = web::block(move || {
         let mut conn = pool.get().expect("Failed to get DB connection from pool");
         insert_new_note(&mut conn, new_note.into_inner())
