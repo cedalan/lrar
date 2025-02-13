@@ -6,6 +6,7 @@
         </div>
         <div class="note-board">
             <div v-for="note in notes" :key="note.id" class="note">
+                <button class="delete-note" @click="deleteNote(note)">X</button>
                 <p>{{ note.message }}</p>
                 <small>{{ note.created_at.slice(0, 16) }}</small>
             </div>
@@ -66,7 +67,23 @@ export default defineComponent ({
             } catch (error) {
                 console.error("Error creating note:( - ", error)
             }
-        },  
+        }, 
+        async deleteNote(note: Note) {
+            if (window.confirm("Are you sure you want to delete this note?")) {
+                try {
+                const response = await fetch(`http://127.0.0.1:3001/note/${note.id}`, {
+                    method: "DELETE",
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to delete note");
+                }
+                // Remove the deleted note from the list
+                this.notes = this.notes.filter((n: Note) => n.id !== note.id);
+                } catch (error) {
+                console.error("Error deleting note:", error);
+                }
+            }
+        }, 
     },
     async created() {
         try {
@@ -118,9 +135,20 @@ export default defineComponent ({
 }
 
 .note {
+  position: relative; /* Establishes a positioning context */
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   border-bottom: 1px solid #eee;
 }
 
+.delete-note {
+  position: absolute;
+  top: 0.5rem;   /* Adjust as needed */
+  right: 0.5rem; /* Adjust as needed */
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 1rem;
+  cursor: pointer;
+}
 </style>
