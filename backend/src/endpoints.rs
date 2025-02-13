@@ -1,9 +1,9 @@
-use actix_web::{web, get, HttpResponse, Error, post};
+use actix_web::{web, get, HttpResponse, Error, post, delete};
 use crate::db::DbPool;
 use crate::models::{Burn, BurnDto, BurnResponse, Note, NewNote, NewTenant, Tenant, TenantResponse};
 use crate::schema::tenants::dsl::{tenants, id as tenant_id_column};
 use crate::schema::burn::dsl::*;
-use crate::schema::notes::dsl::*;
+use crate::schema::notes::dsl::{notes, id as note_id_column};
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
 use crate::utils::{get_weekly_chore, id_to_name, insert_new_burn, insert_new_tenant, insert_new_note};
@@ -77,6 +77,47 @@ pub async fn create_note(pool: web::Data<DbPool>, new_note: web::Json<NewNote>) 
     println!("Note successfully inserted: {:?}", result);
 
     Ok(HttpResponse::Ok().json(result))
+}
+
+#[delete("/note/{note_id}")]
+pub async fn delete_note(note_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    let note_id = note_id.into_inner();
+
+    let deleted_note = web::block(move || {
+        let mut conn = pool.get().expect("Failed to get DB connection");
+
+        let existing_note = notes
+            .filter(note_id_column.eq(note_id))
+            .first::<Note>(&mut conn)
+            .optional()?;
+
+        if existing_note.is_none() {
+            return Err(diesel::result::Error::NotFound);
+        }
+
+        diesel::delete(notes.filter(note_id_column.eq(note_id))).execute(&mut conn)
+    })
+    .await
+    .map_err(|e| {
+        eprintln!("Blocking error: {:?}", e);
+        ErrorInternalServerError("Error during blocking operation")
+    })?
+    .map_err(|e| {
+        eprintln!("Database error: {:?}", e);
+        ErrorInternalServerError("Error querying the database")
+    })?;
+
+    if deleted_note == 0 {
+        println!("Note with ID {} not found", note_id);
+        return Ok(HttpResponse::NotFound().json(serde_json::json!({
+            "error": "Note not found"
+        })));
+    }
+
+    println!("Note with ID {} successfully deleted", note_id);
+    Ok(HttpResponse::Ok().json(serde_json::json!({
+        "message": "Note deleted successfully"
+    })))
 }
 
 #[get("notes")]
