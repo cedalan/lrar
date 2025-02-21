@@ -162,14 +162,7 @@ pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
     // Base URL for images
     let base_url = "http://localhost:3001/images/";
 
-    let mut all_tenant_chores = get_weekly_chore();
-
-    if tenants_data.len() > all_tenant_chores.len() {
-        println!("Number of chores are less than the number of tenants. Adding empty chroe to avoid truncation");
-        for _ in 0..(tenants_data.len() - all_tenant_chores.len()) {
-            all_tenant_chores.push("Nothing".to_string());
-        }
-    } 
+    let all_tenant_chores = get_weekly_chore(tenants_data.len()); 
 
     let response_data: Vec<TenantResponse> = tenants_data
         .into_iter()

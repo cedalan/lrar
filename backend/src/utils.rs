@@ -3,8 +3,8 @@ use diesel::{PgConnection, RunQueryDsl};
 use crate::models::{Burn, BurnDto, NewTenant, Note, NewNote};
 use crate::models::Tenant;
 
-pub fn get_weekly_chore() -> Vec<String> {
-    let all_chores: Vec<String> = vec![
+pub fn get_weekly_chore(n_tenants: usize) -> Vec<String> {
+    let mut all_chores: Vec<String> = vec![
         "Clean the kitchen".to_string(),
         "Clean the toilet".to_string(),
         "Clean the bathroom".to_string(),
@@ -12,6 +12,14 @@ pub fn get_weekly_chore() -> Vec<String> {
         "Clean the living room".to_string(),
         "Take out all trash".to_string(),
     ];
+
+    let n_missing = n_tenants - all_chores.len(); //Number of missing chores
+
+    if n_missing > 0 {
+        for _ in 0..(n_missing) {
+            all_chores.push("Nothing".to_string());
+        }
+    }
 
     //Arbritrary start date
     let start_date = NaiveDate::from_ymd_opt(2024, 12, 9).expect("Invalid date");
