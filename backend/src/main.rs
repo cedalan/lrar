@@ -10,7 +10,7 @@ mod schema;
 mod endpoints;
 mod utils;
 
-use endpoints::{create_burn, create_tenant, get_tenant_burns, get_tenants};
+use endpoints::{create_burn, create_note, create_tenant, delete_note, get_notes, get_tenant_burns, get_tenants};
 
 const PORT: u16 = 3001;
 
@@ -36,14 +36,17 @@ async fn main() -> std::io::Result<()> {
             .wrap(
                 Cors::default()
                     .allowed_origin("http://localhost:5173")
-                    .allowed_methods(vec!["GET", "POST"])
+                    .allowed_methods(vec!["GET", "POST", "DELETE"])
                     .allow_any_header(),
             )
             .route("/", web::get().to(hello))
             .service(get_tenants)
             .service(get_tenant_burns)
+            .service(get_notes)
             .service(create_burn)
             .service(create_tenant)
+            .service(create_note)
+            .service(delete_note)
     })
     .bind(format!("0.0.0.0:{}", PORT))?
     .run()
