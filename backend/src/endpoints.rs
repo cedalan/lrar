@@ -179,6 +179,7 @@ pub async fn get_tenants(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
             dishwasher_count: tenant.dishwasher_count,
             favorite_quote: tenant.favorite_quote,
             weekly_chore: weekly_chore,
+            current_burn_count: tenant.current_burn_count,
         })
         .collect();
 
