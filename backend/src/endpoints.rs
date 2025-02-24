@@ -6,27 +6,50 @@ use crate::schema::burn::dsl::*;
 use crate::schema::notes::dsl::{notes, id as note_id_column};
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
-use crate::utils::{get_weekly_chore, id_to_name, insert_new_burn, insert_new_tenant, insert_new_note};
+use crate::utils::{get_weekly_chore, give_burn_to_tenant, id_to_name, insert_new_burn, insert_new_note, insert_new_tenant};
 
 
 #[post("/burn")]
 pub async fn create_burn(pool: web::Data<DbPool>, new_burn: web::Json<BurnDto>) -> Result<HttpResponse, Error> {
     println!("Request received for create_burn: {:?}", new_burn);
-     let new_burn = web::block (move || {
-        let mut conn = pool.get().expect("failed to get db connection from pool");
-        insert_new_burn(&mut conn, new_burn.into_inner())
-    }).await
-        .map_err(|e| {
-            eprintln!("Blocking error: {:?}", e);
-            ErrorInternalServerError("Error during blocking operation")
-        })
-        .map_err(|e| {
-            eprintln!("Database error: {:?}", e);
-            ErrorInternalServerError("Error querying the database")
-        })?;
-    println!("Sucessfully inserted?");
-    let result = new_burn.unwrap();
-    println!("Burn successfully inserted: {:?}", result);
+
+    let burn_data = new_burn.into_inner();
+    let burned_tenant_id = burn_data.receiver_id;
+
+    let result = web::block(move || {
+        let mut conn = pool.get().expect("Failed to get DB connection from pool");
+
+        // Check if tenant exists
+        let tenant_exists: Option<Tenant> = tenants
+            .filter(tenant_id_column.eq(burned_tenant_id))
+            .first::<Tenant>(&mut conn)
+            .optional()
+            .expect("Error checking if tenant exists");
+
+        if tenant_exists.is_none() {
+            return Err(diesel::result::Error::NotFound);
+        }
+
+        // Insert the new burn
+        let inserted_burn = insert_new_burn(&mut conn, burn_data)?;
+
+        // Increase burn count
+        give_burn_to_tenant(&mut conn, burned_tenant_id)?;
+
+        Ok(inserted_burn)
+    })
+    .await
+    .map_err(|e| {
+        eprintln!("Blocking error: {:?}", e);
+        ErrorInternalServerError("Error during blocking operation")
+    })?
+    .map_err(|e| {
+        eprintln!("Database error: {:?}", e);
+        ErrorInternalServerError("Error querying the database")
+    })?;
+
+    println!("Burn successfully inserted and tenant's burn count updated: {:?}", result);
+
     Ok(HttpResponse::Ok().json(result))
 }
 

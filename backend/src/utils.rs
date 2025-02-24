@@ -89,6 +89,22 @@ pub fn insert_new_tenant(
     query_result
 }
 
+pub fn give_burn_to_tenant(
+    conn: &mut PgConnection,
+    burned_tenant_id: i32,
+) -> diesel::QueryResult<()> {
+    use diesel::prelude::*;
+    use crate::schema::tenants::dsl::*;
+    diesel::update(tenants.filter(id.eq(burned_tenant_id)))
+    .set((
+        burn_count.eq(burn_count + 1),
+        current_burn_count.eq(current_burn_count + 1),
+    ))
+    .execute(conn)?;
+
+    Ok(())
+}
+
 pub async fn id_to_name(tenant_id: i32, tenants: &[Tenant]) -> String {
     for tenant in tenants {
         if tenant_id == tenant.id {
