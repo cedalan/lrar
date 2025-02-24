@@ -4,7 +4,7 @@
       <h2> {{ tenant.name }}, {{ tenant.age }} år</h2>
       <img :src="tenant.image_url" alt="Tenant image">
       <p> Tatt ut av oppvaskmaskinen {{ tenant.dishwasher_count }} ganger </p>
-      <p> Burns: {{ tenant.burn_count }} </p>
+      <p> Burns: {{ tenant.current_burn_count }} </p>
       <p> Weekly chore: {{ tenant.weekly_chore.toLowerCase() }} </p>
       <p style="font-style:italic;">{{ tenant.favorite_quote }}</p>
       <button @click="openBurnForm(tenant)">Give Burn</button>
@@ -36,6 +36,7 @@ interface Tenant {
   dishwasher_count: number,
   favorite_quote: string
   weekly_chore: string,
+  current_burn_count: number,
 }
 
 export default defineComponent ({

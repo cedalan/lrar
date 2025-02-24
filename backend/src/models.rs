@@ -28,6 +28,7 @@ pub struct Tenant {
     pub burn_count: Option<i32>,
     pub dishwasher_count: Option<i32>,
     pub favorite_quote: Option<String>,
+    pub current_burn_count: Option<i32>,
 }
 
 #[derive(Insertable, Serialize, Deserialize, Debug)]
@@ -39,6 +40,7 @@ pub struct NewTenant {
     pub burn_count: Option<i32>,
     pub dishwasher_count: Option<i32>,
     pub favorite_quote: Option<String>,
+    pub current_burn_count: Option<i32>,
 }
 
 #[derive(Serialize)]
@@ -51,6 +53,7 @@ pub struct TenantResponse {
     pub dishwasher_count: Option<i32>,
     pub favorite_quote: Option<String>,
     pub weekly_chore: String,
+    pub current_burn_count: Option<i32>,
 }
 
 #[derive(Queryable, Selectable, Serialize, Debug)]

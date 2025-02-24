@@ -27,6 +27,7 @@ diesel::table! {
         burn_count -> Nullable<Int4>,
         dishwasher_count -> Nullable<Int4>,
         favorite_quote -> Nullable<Text>,
+        current_burn_count -> Nullable<Int4>,
     }
 }
 
