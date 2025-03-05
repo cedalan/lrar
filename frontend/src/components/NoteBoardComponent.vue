@@ -108,7 +108,7 @@ export default defineComponent ({
 
 <style scoped>
 .note-board-overlay {
-  width: 35vw;         /* 35% of the viewport width */
+  width: 20vw;         /* 35% of the viewport width */
   margin: 0 auto;      /* Center horizontally */
   padding: 1rem;
   border: 1px solid #ccc;
