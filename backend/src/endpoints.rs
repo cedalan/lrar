@@ -1,4 +1,4 @@
-use actix_web::{web, get, HttpResponse, Error, post, delete};
+use actix_web::{web, get, HttpResponse, Error, post, patch, delete};
 use crate::db::DbPool;
 use crate::models::{Burn, BurnDto, BurnResponse, Note, NewNote, NewTenant, Tenant, TenantResponse};
 use crate::schema::tenants::dsl::{tenants, id as tenant_id_column};
@@ -8,7 +8,7 @@ use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
 use crate::utils::{get_weekly_chore, give_burn_to_tenant, id_to_name, increase_dishwasher_count, insert_new_burn, insert_new_note, insert_new_tenant};
 
-#[post("/dishwasher_count/{tenant_id}")]
+#[patch("/dishwasher_count/{tenant_id}")]
 pub async fn increment_tenant_dishwasher_count(tenant_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
     println!("Request recieved for increment_tenant_dishwasher_count: {}", tenant_id);
 

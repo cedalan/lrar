@@ -36,7 +36,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(
                 Cors::default()
                     .allowed_origin("http://localhost:5173")
-                    .allowed_methods(vec!["GET", "POST", "DELETE"])
+                    .allowed_methods(vec!["GET", "POST", "DELETE", "PATCH"])
                     .allow_any_header(),
             )
             .route("/", web::get().to(hello))

@@ -72,7 +72,7 @@ export default defineComponent({
   methods: {
     async increaseTenantDishwasherCount(tenant: Tenant) {
       const response = await fetch(`http://127.0.0.1:3001/dishwasher_count/${tenant.id}`, {
-        method: "POST"
+        method: "PATCH"
       });
 
       if (!response.ok) {
