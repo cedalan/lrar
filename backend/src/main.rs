@@ -10,7 +10,7 @@ mod schema;
 mod endpoints;
 mod utils;
 
-use endpoints::{create_burn, create_note, create_tenant, delete_note, get_notes, get_tenant_burns, get_tenants};
+use endpoints::{create_burn, create_note, create_tenant, delete_note, get_notes, get_tenant_burns, get_tenants, increment_tenant_dishwasher_count};
 
 const PORT: u16 = 3001;
 
@@ -43,6 +43,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_tenants)
             .service(get_tenant_burns)
             .service(get_notes)
+            .service(increment_tenant_dishwasher_count)
             .service(create_burn)
             .service(create_tenant)
             .service(create_note)

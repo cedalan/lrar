@@ -89,6 +89,20 @@ pub fn insert_new_tenant(
     query_result
 }
 
+pub fn increase_dishwasher_count(
+    conn: &mut PgConnection,
+    responsible_tenant_id: i32,
+) -> diesel::QueryResult<usize> {
+    use diesel::prelude::*;
+    use crate::schema::tenants::dsl::*;
+
+    diesel::update(tenants.filter(id.eq(responsible_tenant_id)))
+    .set(
+        dishwasher_count.eq(dishwasher_count + 1)
+    )
+    .execute(conn)
+}
+
 pub fn give_burn_to_tenant(
     conn: &mut PgConnection,
     burned_tenant_id: i32,
