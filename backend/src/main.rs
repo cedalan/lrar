@@ -10,7 +10,7 @@ mod schema;
 mod endpoints;
 mod utils;
 
-use endpoints::{create_burn, create_note, create_tenant, delete_note, get_notes, get_tenant_burns, get_tenants, increment_tenant_dishwasher_count};
+use endpoints::{create_burn, create_note, create_tenant, upload_tenant_image, delete_note, get_notes, get_tenant_burns, get_tenants, increment_tenant_dishwasher_count};
 
 const PORT: u16 = 3001;
 
@@ -36,6 +36,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(
                 Cors::default()
                     .allowed_origin("http://localhost:5173")
+                    .allowed_origin("http://127.0.0.1:5173")
                     .allowed_methods(vec!["GET", "POST", "DELETE", "PATCH"])
                     .allow_any_header(),
             )
@@ -46,6 +47,7 @@ async fn main() -> std::io::Result<()> {
             .service(increment_tenant_dishwasher_count)
             .service(create_burn)
             .service(create_tenant)
+            .service(upload_tenant_image)
             .service(create_note)
             .service(delete_note)
     })

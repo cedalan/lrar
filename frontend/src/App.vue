@@ -1,11 +1,12 @@
 <script setup>
     import TenantView from '@/views/TenantView.vue';
     import BurnTableComponent from './components/BurnTableComponent.vue';
-    import NoteBoardComponent from './components/NoteBoardComponent.vue'
+    import NoteBoardComponent from './components/NoteBoardComponent.vue';
+    import HeaderComponent from './components/HeaderComponent.vue';
 </script>
 <template>
     <div id="everything">
-        <h1 id="welcome-text">Welcome to LRAR - Lazy Roomate Avoidance Registry!</h1>
+        <HeaderComponent />
         <div id="top-row">
             <div id="tenant-view-container">
                 <TenantView />

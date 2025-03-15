@@ -8,6 +8,12 @@ use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
 use crate::utils::{get_weekly_chore, give_burn_to_tenant, id_to_name, increase_dishwasher_count, insert_new_burn, insert_new_note, insert_new_tenant};
 
+use actix_multipart::Multipart;
+use futures_util::StreamExt;
+use std::fs;
+use std::io::Write;
+use uuid::Uuid;
+
 #[patch("/dishwasher_count/{tenant_id}")]
 pub async fn increment_tenant_dishwasher_count(tenant_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
     println!("Request recieved for increment_tenant_dishwasher_count: {}", tenant_id);
@@ -106,6 +112,58 @@ pub async fn create_tenant(pool: web::Data<DbPool>, new_tenant: web::Json<NewTen
     println!("Tenant successfully inserted: {:?}", result);
 
     Ok(HttpResponse::Ok().json(result))
+}
+
+#[post("/tenant_image")]
+pub async fn upload_tenant_image(mut payload: Multipart) -> Result<HttpResponse, Error> {
+    let mut saved_filename = String::new();
+
+    while let Some(field) = payload.next().await {
+        let mut field = field?;
+        let content_type = field
+            .content_type()
+            .map(|mime| mime.to_string())
+            .unwrap_or_else(||"application/octet-stream".to_string());
+
+        println!("Recieved content type: {}", content_type);
+
+        let allowed_types = vec!["image/jpeg", "image/png", "image/jpg"];
+        if !allowed_types.contains(&&content_type.as_str()) {
+            return Ok(HttpResponse::BadRequest().json(serde_json::json!({
+                "error": "Invalid file type. Only JPG and PNG are allowed!"
+            })));
+        }
+
+        let file_extension = match content_type.as_str() {
+            "image/png" => "png",
+            "image/jpeg" | "image/jpg" => "jpg",
+            _ => "dat", //just in case something sneaks through
+        };
+
+        //Generates a random filename - for simplicity
+        let filename = format!("{}.{}", Uuid::new_v4(), file_extension); 
+        let filepath = format!("assets/tenants_images/{}", filename);
+
+        let mut file = fs::File::create(&filepath).expect("Failed to create file!!");
+
+        while let Some(chunk) = field.next().await {
+            let data = chunk?;
+
+            file.write_all(&data);
+        }
+
+        saved_filename = filename.clone();
+    }
+
+    if saved_filename.is_empty() {
+        return Ok(HttpResponse::BadRequest().json(serde_json::json!({
+            "error": "No file uploaded"
+        })));
+    }
+
+    Ok(HttpResponse::Ok().json(serde_json::json!({
+        "filename": saved_filename
+    })))
 }
 
 #[post("/note")]
