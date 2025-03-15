@@ -7,6 +7,7 @@
       <p>Burns: {{ tenant.current_burn_count }}</p>
       <p>Weekly chore: {{ tenant.weekly_chore.toLowerCase() }}</p>
       <p style="font-style:italic;">{{ tenant.favorite_quote }}</p>
+      <button @click="increaseTenantDishwasherCount(tenant)">Took out dishes</button>
       <button @click="openBurnForm(tenant)">Give Burn</button>
       <button @click="showBurnHistory(tenant)">Show Burns</button>
     </div>
@@ -69,6 +70,15 @@ export default defineComponent({
     }
   },
   methods: {
+    async increaseTenantDishwasherCount(tenant: Tenant) {
+      const response = await fetch(`http://127.0.0.1:3001/dishwasher_count/${tenant.id}`, {
+        method: "PATCH"
+      });
+
+      if (!response.ok) {
+        throw new Error("Some error came up when increasing tenant dishwasher count. Error: " + response.statusText);
+      }
+    },
     openBurnForm(tenant: Tenant) {
       this.burnFormSelectedTenant = tenant;
     },

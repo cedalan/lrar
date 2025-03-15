@@ -1,4 +1,4 @@
-use actix_web::{web, get, HttpResponse, Error, post, delete};
+use actix_web::{web, get, HttpResponse, Error, post, patch, delete};
 use crate::db::DbPool;
 use crate::models::{Burn, BurnDto, BurnResponse, Note, NewNote, NewTenant, Tenant, TenantResponse};
 use crate::schema::tenants::dsl::{tenants, id as tenant_id_column};
@@ -6,8 +6,41 @@ use crate::schema::burn::dsl::*;
 use crate::schema::notes::dsl::{notes, id as note_id_column};
 use actix_web::error::ErrorInternalServerError;
 use diesel::prelude::*;
-use crate::utils::{get_weekly_chore, give_burn_to_tenant, id_to_name, insert_new_burn, insert_new_note, insert_new_tenant};
+use crate::utils::{get_weekly_chore, give_burn_to_tenant, id_to_name, increase_dishwasher_count, insert_new_burn, insert_new_note, insert_new_tenant};
 
+#[patch("/dishwasher_count/{tenant_id}")]
+pub async fn increment_tenant_dishwasher_count(tenant_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    println!("Request recieved for increment_tenant_dishwasher_count: {}", tenant_id);
+
+    let tenant_id = tenant_id.into_inner();
+
+    let was_updated = web::block(move || {
+        let mut conn = pool.get().expect("Failed to get DB connection from pool");
+
+        increase_dishwasher_count(&mut conn, tenant_id)
+    })
+    .await
+    .map_err(|e| {
+        eprintln!("Blocking error: {:?}", e);
+        ErrorInternalServerError("Error during blocking operation")
+    })? 
+    .map_err(|e| {
+        eprintln!("Database error: {:?}", e);
+        ErrorInternalServerError("Error querying the database")
+    })?;
+
+    // If no tenant was updated, we can assume that no tenant with that id exists!
+    if was_updated == 0 {
+        return Ok(HttpResponse::NotFound().json(serde_json::json!({
+            "error": "Tenant not found"
+        })));
+    }
+
+    // Otherwise success
+    Ok(HttpResponse::Ok().json(serde_json::json!({
+        "message": "Dishwasher count incremented"
+    })))
+}
 
 #[post("/burn")]
 pub async fn create_burn(pool: web::Data<DbPool>, new_burn: web::Json<BurnDto>) -> Result<HttpResponse, Error> {
