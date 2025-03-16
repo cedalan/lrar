@@ -118,8 +118,16 @@ pub async fn create_tenant(pool: web::Data<DbPool>, new_tenant: web::Json<NewTen
 pub async fn upload_tenant_image(mut payload: Multipart) -> Result<HttpResponse, Error> {
     let mut saved_filename = String::new();
 
-    while let Some(field) = payload.next().await {
-        let mut field = field?;
+    while let Some(field_result) = payload.next().await {
+        let mut field = match field_result {
+            Ok(f) => f,
+            Err(e) => {
+                eprintln!("Error reading multipart field: {:?}", e);
+                return Ok(HttpResponse::InternalServerError().json(
+                    serde_json::json!({"error": "Error accessing uploaded data"})
+                ));
+            }
+        };
         let content_type = field
             .content_type()
             .map(|mime| mime.to_string())
@@ -146,10 +154,23 @@ pub async fn upload_tenant_image(mut payload: Multipart) -> Result<HttpResponse,
 
         let mut file = fs::File::create(&filepath).expect("Failed to create file!!");
 
-        while let Some(chunk) = field.next().await {
-            let data = chunk?;
+        while let Some(chunk_result) = field.next().await {
+            let chunk = match chunk_result {
+                Ok(data) => data,
+                Err(e) => {
+                    eprintln!("Error reading chunk: {:?}", e);
+                    return Ok(HttpResponse::InternalServerError().json(
+                        serde_json::json!({"error": "Error reading file chunk"})
+                    ));
+                }
+            };
 
-            file.write_all(&data);
+            if let Err(e) = file.write_all(&chunk) {
+                eprintln!("File write error: {:?}", e);
+                return Ok(HttpResponse::InternalServerError().json(
+                    serde_json::json!({"error": "Failed to write data to file"})
+                ));
+            }
         }
 
         saved_filename = filename.clone();
