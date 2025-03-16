@@ -32,7 +32,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
-            .service(fs::Files::new("/images", "/lrar/backend/assets/tenants_images").show_files_listing())
+            .service(fs::Files::new("/images", "assets/tenants_images").show_files_listing())
             .wrap(
                 Cors::default()
                     .allowed_origin("http://localhost:5173")
