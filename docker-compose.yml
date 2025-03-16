@@ -32,6 +32,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./backend/migrations:/lrar/backend/migrations
+      - ./backend/assets/tenants_images:/lrar/backend/assets/tenants_images
     depends_on:
       db:
         condition: service_healthy
