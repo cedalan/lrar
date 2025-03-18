@@ -132,6 +132,9 @@ export default defineComponent ({
 
 .note-board {
   margin-top: 1rem;
+  max-height: 400px;
+  overflow-y: auto; /* Prevents excessive height issues */
+  padding-right: 0.5rem;
 }
 
 .note {

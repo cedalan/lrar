@@ -92,20 +92,44 @@ export default defineComponent({
 <style scoped>
 .all-tenants-div {
   display: flex;
-  gap: 20px;
+  gap: 1.25rem; 
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: center;
+  padding: 1rem;
 }
+
 .tenant-div {
-  flex: 0 0 calc(33.33% - 20px);
+  flex: 1 1 calc(33% - 15px);
+  max-width: 450px;
   background-color: lightcoral;
-  padding: 20px;
+  padding: 1.25rem;
   text-align: center;
   box-sizing: border-box;
+  border-radius: 10px;
 }
+
 .tenant-div img {
-  width: 200px;
-  height: 200px;
+  width: 100%; 
+  max-width: 10rem; 
+  height: auto;
   object-fit: cover;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #fff;
+  color: #333;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  margin-top: 0.5rem;
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.8);
 }
 </style>

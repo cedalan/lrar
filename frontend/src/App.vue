@@ -72,4 +72,14 @@ h1 {
     justify-content: center;
     align-items: center;
 }
+
+body {
+  transform: scale(0.85);
+  transform-origin: top left;
+  width: 115%;
+}
+
+html {
+    overflow: hidden;
+}
 </style>
