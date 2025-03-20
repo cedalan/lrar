@@ -56,17 +56,21 @@ export default defineComponent({
   },
   methods: {
     async removeFiveBurns(tenant: Tenant) {
-      try {
-        const response = await fetch(`http://127.0.0.1:3001/remove_burn/${tenant.id}`, {
-          method: "PATCH"
-        });
+      if (confirm("Do you want to repent? (Have you bought toilet paper worth 200kr?)")) {
+        try {
+          const response = await fetch(`http://127.0.0.1:3001/remove_burn/${tenant.id}`, {
+            method: "PATCH"
+          });
 
-        if (!response.ok) {
-          throw new Error("Some error came up when removing tenant burns!")
+          if (!response.ok) {
+            throw new Error("Some error came up when removing tenant burns!");
+          } else {
+            alert("You have repented for your sins!")
+          }
+
+        } catch (error) {
+            console.error("Error removing tenant burn data!");
         }
-
-      } catch (error) {
-        console.error("Error removing tenant burn data!")
       }
     }
   }
