@@ -14,7 +14,6 @@
             >
               <p>Reason: {{ burn.reason }}</p>
               <p>From: {{ burn.giver_name }}</p>
-              <p>To: {{ burn.receiver_name }}</p>
               <p>Created: {{ burn.created_at }}</p>
             </li>
           </ul>
