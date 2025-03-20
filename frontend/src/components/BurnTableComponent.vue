@@ -6,6 +6,10 @@
             </div>
             <div class="tenant-burns"> 
                 {{ "🔥".repeat(tenant.current_burn_count ?? 0) }} 
+                <button 
+                  v-if="tenant.current_burn_count > 4"
+                  @click="removeFiveBurns(tenant)"
+                >Repent</button>
             </div>
         </div>
     </div>
@@ -50,6 +54,26 @@ export default defineComponent({
       console.error("Error fetching tenant data:", error);
     }
   },
+  methods: {
+    async removeFiveBurns(tenant: Tenant) {
+      if (confirm("Do you want to repent? (Have you bought toilet paper worth 200kr?)")) {
+        try {
+          const response = await fetch(`http://127.0.0.1:3001/remove_burn/${tenant.id}`, {
+            method: "PATCH"
+          });
+
+          if (!response.ok) {
+            throw new Error("Some error came up when removing tenant burns!");
+          } else {
+            alert("You have repented for your sins!")
+          }
+
+        } catch (error) {
+            console.error("Error removing tenant burn data!");
+        }
+      }
+    }
+  }
 });
 </script>
 
