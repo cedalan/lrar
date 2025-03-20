@@ -103,6 +103,24 @@ pub fn increase_dishwasher_count(
     .execute(conn)
 }
 
+pub fn decrease_burn_count(
+    conn: &mut PgConnection,
+    tenant_id: i32,
+    decrease: i32,
+) -> diesel::QueryResult<()> {
+    use diesel::prelude::*;
+    use crate::schema::tenants::dsl::*;
+
+    let result = diesel::update(tenants.filter(id.eq(tenant_id)))
+        .set(current_burn_count.eq(current_burn_count - decrease))
+        .execute(conn);
+
+    match result {
+        Ok(_) => Ok(()),
+        Err(e) => Err(e),
+    }
+}
+
 pub fn give_burn_to_tenant(
     conn: &mut PgConnection,
     burned_tenant_id: i32,
