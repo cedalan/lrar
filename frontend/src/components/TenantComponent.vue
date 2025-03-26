@@ -19,6 +19,7 @@
     v-if="burnFormSelectedTenant"
     :receiver="burnFormSelectedTenant"
     @close="burnFormSelectedTenant = null"
+    @burn_submitted="this.$emit('burn_submitted')"
   />
   <TenantBurnHistoryComponent
     v-if="burnHistorySelectedTenant"

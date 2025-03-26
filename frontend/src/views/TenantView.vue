@@ -4,6 +4,6 @@ import TenantComponent from '@/components/TenantComponent.vue';
 
 <template>
     <main>
-        <TenantComponent />
+        <TenantComponent @burn_submitted="this.$emit('burn_submitted')"/>
     </main>
 </template>
