@@ -13,7 +13,13 @@ pub fn get_weekly_chore(n_tenants: usize) -> Vec<String> {
         "Take out all trash".to_string(),
     ];
 
-    let n_missing = n_tenants - all_chores.len(); //Number of missing chores
+    let n_missing:usize; //Number of missing chores
+
+    if n_tenants > all_chores.len() {
+        n_missing = n_tenants - all_chores.len();
+    } else {
+        n_missing = 0;
+    }
 
     if n_missing > 0 {
         for _ in 0..(n_missing) {
