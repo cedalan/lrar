@@ -1,8 +1,5 @@
 <template>
-  <div v-if="loading" >
-    <p>Loading...</p>
-  </div>
-  <div v-else class="all-tenants-div">
+  <div v-if="tenants.length" class="all-tenants-div">
     <div v-for="tenant in tenants" :key="tenant.name" class="tenant-div">
       <h2>{{ tenant.name }}, {{ tenant.age }} år</h2>
       <img :src="tenant.image_url" alt="Tenant image">
@@ -14,6 +11,9 @@
       <button @click="openBurnForm(tenant)">Give Burn</button>
       <button @click="showBurnHistory(tenant)">Show Burns</button>
     </div>
+  </div>
+  <div v-else>
+    <p>Error</p>
   </div>
   <BurnFormComponent 
     v-if="burnFormSelectedTenant"
@@ -52,7 +52,6 @@ export default defineComponent({
   },
   data() {
     return {
-      loading: true,
       tenants: [] as Tenant[],
       burnFormSelectedTenant: null as Tenant | null,
       burnHistorySelectedTenant: null as Tenant | null
@@ -66,8 +65,6 @@ export default defineComponent({
       }
       const data: Tenant[] = await response.json();
       this.tenants = data;
-      this.loading = false;
-      console.log(this.loading);
     } catch (error) {
       console.error('Error fetching tenant data:', error);
     }
