@@ -61,7 +61,8 @@
           }
   
           alert("Burn submitted successfully!");
-          this.$emit("close"); 
+          this.$emit("burn_submitted")
+          this.$emit("close");
         } catch (error) {
           console.error(error);
         }
