@@ -4,11 +4,14 @@
         <h2>Give a Burn to {{ receiver.name }}</h2>
   
         <form @submit.prevent="submitBurn">
-          <!-- User manually enters their giver_id -->
+
           <div>
-            <label for="giver_id">Your ID:</label>
-            <input v-model="giver_id" type="number" id="giver_id" required />
-          </div>
+            <label for="giver_id">Who are you?:</label>
+            <select v-model="giver_id" id="giver_id" required >
+              <option disabled value="">select user</option>
+              <option v-for="tenant in tenants" :key="tenant.id" :value="tenant.id">{{ tenant.name }}</option>
+            </select>
+          </div>>
           <div>
             <label for="reason">Reason:</label>
             <input v-model="reason" type="text" id="reason" required />
@@ -17,6 +20,7 @@
             <button type="submit">Submit Burn</button>
             <button type="button" @click="$emit('close')">Cancel</button>
           </div>
+
         </form>
       </div>
     </div>
@@ -24,7 +28,19 @@
   
   <script lang="ts">
   import { defineComponent } from "vue";
-  
+
+  interface Tenant {
+    id: number,
+    name: string,
+    age: number,
+    image_url: string,
+    burn_count: number,
+    dishwasher_count: number,
+    favorite_quote: string
+    weekly_chore: string,
+    current_burn_count: number,
+  }
+
   export default defineComponent({
     name: "BurnFormComponent",
     props: {
@@ -36,11 +52,30 @@
     data() {
       return {
         reason: "",
-        giver_id: null
+        giver_id: "",
+        tenants: []
       };
     },
+    async created() {
+    try {
+      const response = await fetch("http://127.0.0.1:3001/tenants");
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok: " + response.statusText);
+      }
+
+      const data: Tenant[] = await response.json(); // Type the fetched data as an array of Tenant
+
+      // Assign the response data to tenants
+      this.tenants = data;
+
+    } catch (error) {
+      console.error("Error fetching tenant data:", error);
+    }
+  },
     methods: {
       async submitBurn() {
+        console.log(this.receiver)
         const burnData = {
           reason: this.reason,
           receiver_id: this.receiver.id,
@@ -65,7 +100,8 @@
           }
   
           alert("Burn submitted successfully!");
-          this.$emit("close"); 
+          this.$emit("burn_submitted")
+          this.$emit("close");
         } catch (error) {
           console.error(error);
         }
