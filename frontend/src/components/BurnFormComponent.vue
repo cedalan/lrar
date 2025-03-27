@@ -5,14 +5,18 @@
   
         <form @submit.prevent="submitBurn">
           <!-- User manually enters their giver_id -->
-          <label for="giver_id">Your ID:</label>
-          <input v-model="giver_id" type="number" id="giver_id" required />
-  
-          <label for="reason">Reason:</label>
-          <input v-model="reason" type="text" id="reason" required />
-  
-          <button type="submit">Submit Burn</button>
-          <button type="button" @click="$emit('close')">Cancel</button>
+          <div>
+            <label for="giver_id">Your ID:</label>
+            <input v-model="giver_id" type="number" id="giver_id" required />
+          </div>
+          <div>
+            <label for="reason">Reason:</label>
+            <input v-model="reason" type="text" id="reason" required />
+          </div>
+          <div>
+            <button type="submit">Submit Burn</button>
+            <button type="button" @click="$emit('close')">Cancel</button>
+          </div>
         </form>
       </div>
     </div>

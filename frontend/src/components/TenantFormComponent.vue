@@ -4,20 +4,26 @@
             <h2>Create a tenant</h2>
 
             <form @submit.prevent="submitTenant">
+              <div>
                 <label for="name">Tenant name:</label>
                 <input v-model="tenant_name" type="text" required />
-
+              </div>
+              <div>
                 <label for="age">Tenant age:</label>
                 <input v-model="tenant_age" type="number" required />
-
-                <label for="image">Tenant image</label>
+              </div>
+              <div>
+                 <label for="image">Tenant image</label>
                 <input type="file" ref="tenant_image" accept="image/*" id="image" required @change="handleFileUpload"/>
-
-                <label for="favorite_quote">Tenant quote:</label>
+              </div>
+              <div>
+                 <label for="favorite_quote">Tenant quote:</label>
                 <input v-model="tenant_quote" type="text" required />
-
-                <button type="submit">Create tenant!</button>
-                <button type="button" @click="$emit('close')">Cancel</button>
+              </div>
+               <div>
+                 <button type="submit">Create tenant!</button>
+                 <button type="button" @click="$emit('close')">Cancel</button>
+               </div>
             </form>
         </div>
     </div>
