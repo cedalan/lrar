@@ -4,17 +4,23 @@
         <h2>Give a Burn to {{ receiver.name }}</h2>
   
         <form @submit.prevent="submitBurn">
-          <label for="giver_id">Who are you?:</label>
-          <select v-model="giver_id" id="giver_id" required >
-            <option disabled value="">select user</option>
-            <option v-for="tenant in tenants" :key="tenant.id" :value="tenant.id">{{ tenant.name }}</option>
-          </select>
-  
-          <label for="reason">Reason:</label>
-          <input v-model="reason" type="text" id="reason" required />
-  
-          <button type="submit">Submit Burn</button>
-          <button type="button" @click="$emit('close')">Cancel</button>
+
+          <div>
+            <label for="giver_id">Who are you?:</label>
+            <select v-model="giver_id" id="giver_id" required >
+              <option disabled value="">select user</option>
+              <option v-for="tenant in tenants" :key="tenant.id" :value="tenant.id">{{ tenant.name }}</option>
+            </select>
+          </div>>
+          <div>
+            <label for="reason">Reason:</label>
+            <input v-model="reason" type="text" id="reason" required />
+          </div>
+          <div>
+            <button type="submit">Submit Burn</button>
+            <button type="button" @click="$emit('close')">Cancel</button>
+          </div>
+
         </form>
       </div>
     </div>
