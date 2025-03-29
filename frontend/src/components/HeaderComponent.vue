@@ -1,4 +1,7 @@
 <template>
+  <div id="coffee-train-btn">
+    <CoffeeTrainComponent/>
+  </div>
     <div id="everything">
         <h1 id="welcome-text">Welcome to LRAR - Lazy Roomate Avoidance Registry!</h1>
         <button id="add-tenant-btn" @click="openSchema(true)">Add Tenant</button>
@@ -13,10 +16,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TenantFormComponent from '@/components/TenantFormComponent.vue';
+// import CoffeeTrainComponent from '@/components/CoffeeTrainComponent.vue';
+import CoffeeTrainComponent from "./CoffeeTrainComponent.vue";
 
 export default defineComponent({
     name: "HeaderComponent",
     components: {
+      CoffeeTrainComponent,
         TenantFormComponent,
     },
     data() {
@@ -39,6 +45,13 @@ export default defineComponent({
     justify-content: center;
     padding: 20px;
     text-align: center;
+}
+
+#coffee-train-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+
 }
 
 #add-tenant-btn {
