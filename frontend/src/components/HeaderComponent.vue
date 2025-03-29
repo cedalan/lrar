@@ -16,8 +16,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TenantFormComponent from '@/components/TenantFormComponent.vue';
-// import CoffeeTrainComponent from '@/components/CoffeeTrainComponent.vue';
-import CoffeeTrainComponent from "./CoffeeTrainComponent.vue";
+import CoffeeTrainComponent from '@/components/CoffeeTrainComponent.vue';
 
 export default defineComponent({
     name: "HeaderComponent",
