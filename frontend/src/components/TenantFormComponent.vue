@@ -14,7 +14,14 @@
               </div>
               <div>
                  <label for="image">Tenant image</label>
-                <input type="file" ref="tenant_image" accept="image/*" id="image" required @change="handleFileUpload"/>
+                <input 
+                    type="file" 
+                    ref="tenant_image" 
+                    accept="image/*" 
+                    id="image" 
+                    required 
+                    @change="handleFileUpload"
+                />
               </div>
               <div>
                  <label for="favorite_quote">Tenant quote:</label>
@@ -38,19 +45,77 @@ export default defineComponent({
         return {
             tenant_name: "",
             tenant_age: null as number | null,
-            tenant_image: "",
+            tenant_image: null as File | null,
             tenant_burn_count: 0,
             tenant_dishwasher_count: 0,
             tenant_quote: "",
             tenant_current_burn_count: 0,
+            isResizingImage: false, //Track if image is still being resized
         };
     },
     methods: {
-        handleFileUpload(event: Event) {
+        async handleFileUpload(event: Event) {
             const input = event.target as HTMLInputElement;
-            if (input.files && input.files.length > 0) {
-                this.tenant_image = input.files[0];
+            if (!input.files || input.files.length === 0) {
+                return;
             }
+            const file = input.files[0];
+            this.isResizingImage = true;
+            try {
+                //Resize image with helper function. Size can ofc be changed
+                const squareFile = await this.resizeImage(file, 300);
+                this.tenant_image = squareFile;
+            } catch (err) {
+                console.error("Error resizing image:", err);
+                alert("Failed to process the image. Please try a different image.");
+            } finally {
+                this.isResizingImage = false;
+            }
+        },
+        resizeImage(file: File, canvasSize: number) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (!e.target?.result) {
+                        reject(new Error("Failed to read image file."));
+                        return;
+                    }
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement("canvas");
+                        canvas.width = canvasSize;
+                        canvas.height = canvasSize;
+                        const ctx = canvas.getContext("2d");
+
+                        if (!ctx) {
+                            reject(new Error("Failed to create canvas context."));
+                            return;
+                        }
+                        
+                        const minSide = Math.min(img.width, img.height);
+                        const startX = (img.width - minSide) / 2;
+                        const startY = (img.height - minSide) / 2;
+
+                        ctx.drawImage(img, startX, startY, minSide, minSide, 0, 0, canvasSize, canvasSize);
+
+                        canvas.toBlob((blob) => {
+                            if (!blob) {
+                                reject(new Error("Failed to convert image to blob."));
+                                return;
+                            }
+                            const newFile = new File([blob], file.name, { type: file.type });
+                            resolve(newFile)
+                        }, 
+                        "image/png", 
+                        1.0
+                        );
+                    }
+                    img.onerror = (error) => reject(error);
+                    img.src = e.target.result as string;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         },
         async submitTenant() {
             try {
@@ -83,6 +148,11 @@ export default defineComponent({
                 }
                 if (this.tenant_image.size > 10 * 1024 * 1024) { // 10MB limit, might be too big...
                     alert("File size must be under 10MB.");
+                    return;
+                }
+
+                if (this.isResizingImage) {
+                    alert("Please wait while the image is being resized...");
                     return;
                 }
                 
