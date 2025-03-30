@@ -106,7 +106,7 @@ export default defineComponent({
                             const newFile = new File([blob], file.name, { type: file.type });
                             resolve(newFile)
                         }, 
-                        "image/png", 
+                        file.type, 
                         1.0
                         );
                     }
