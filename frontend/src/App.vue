@@ -91,6 +91,6 @@ body {
 }
 
 html {
-    overflow: hidden;
+    overflow: scroll;
 }
 </style>
