@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent} from 'vue';
 import BurnFormComponent from '@/components/BurnFormComponent.vue';
 import TenantBurnHistoryComponent from '@/components/TenantBurnHistoryComponent.vue';
 
@@ -46,6 +46,7 @@ interface Tenant {
 }
 
 export default defineComponent({
+  inject:['store'],
   name: 'TenantComponent',
   components: {
     BurnFormComponent,
@@ -79,13 +80,15 @@ export default defineComponent({
       if (!response.ok) {
         throw new Error("Some error came up when increasing tenant dishwasher count. Error: " + response.statusText);
       }
+      tenant.dishwasher_count++
+      this.store.dishwasherUpdated()
     },
     openBurnForm(tenant: Tenant) {
       this.burnFormSelectedTenant = tenant;
     },
     showBurnHistory(tenant: Tenant) {
       this.burnHistorySelectedTenant = tenant;
-    }
+    },
   }
 });
 </script>

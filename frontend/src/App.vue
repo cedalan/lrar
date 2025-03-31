@@ -3,16 +3,10 @@
     import BurnTableComponent from './components/BurnTableComponent.vue';
     import NoteBoardComponent from './components/NoteBoardComponent.vue';
     import HeaderComponent from './components/HeaderComponent.vue';
-    import {ref} from 'vue';
-    const reload_burn_component_variable = ref(0);
+    import {ref, inject} from 'vue';
+    const store = inject('store');
 
-    function trigger_burn_component_reload() {
-      if (reload_burn_component_variable.value === 1){
-        reload_burn_component_variable.value--
-      }else {
-        reload_burn_component_variable.value++
-      }
-    }
+
 
 </script>
 <template>
@@ -20,11 +14,11 @@
         <HeaderComponent />
         <div id="top-row">
             <div id="tenant-view-container">
-                <TenantView @burn-submitted="trigger_burn_component_reload"/>
+                <TenantView />
             </div>
             <div id="board-container">
                 <div id="burn-table-container">
-                    <BurnTableComponent :key="reload_burn_component_variable"/>
+                    <BurnTableComponent :key="store.sectionsUpdated.burnUpdated"/>
                 </div>
                 <div id="note-board-container">
                     <NoteBoardComponent />
