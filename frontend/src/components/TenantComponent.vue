@@ -112,7 +112,7 @@ export default defineComponent({
 .tenant-div img {
   width: 100%; 
   max-width: 10rem; 
-  height: auto;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 5px;
 }
