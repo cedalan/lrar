@@ -10,6 +10,7 @@
       <button @click="increaseTenantDishwasherCount(tenant)">Took out dishes</button>
       <button @click="openBurnForm(tenant)">Give Burn</button>
       <button @click="showBurnHistory(tenant)">Show Burns</button>
+      <p> status of flipflop: {{ updateFlipflop }}</p>
     </div>
   </div>
   <div v-else>
@@ -56,7 +57,8 @@ export default defineComponent({
     return {
       tenants: [] as Tenant[],
       burnFormSelectedTenant: null as Tenant | null,
-      burnHistorySelectedTenant: null as Tenant | null
+      burnHistorySelectedTenant: null as Tenant | null,
+	reactiveBoolean: this.store.sectionsUpdated.dishwasherUpdated | false
     };
   },
   async created() {
@@ -80,8 +82,9 @@ export default defineComponent({
       if (!response.ok) {
         throw new Error("Some error came up when increasing tenant dishwasher count. Error: " + response.statusText);
       }
-      tenant.dishwasher_count++
-      this.store.dishwasherUpdated()
+      tenant.dishwasher_count++;
+      this.store.dishwasherUpdated();
+      console.log(this.store.sectionsUpdated.dishwasherUpdated);
     },
     openBurnForm(tenant: Tenant) {
       this.burnFormSelectedTenant = tenant;
@@ -89,6 +92,11 @@ export default defineComponent({
     showBurnHistory(tenant: Tenant) {
       this.burnHistorySelectedTenant = tenant;
     },
+  },
+  computed: {
+	updateFlipflop() {
+		return this.store.sectionsUpdated.dishwasherUpdated.toString();
+	}
   }
 });
 </script>

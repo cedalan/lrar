@@ -17,7 +17,7 @@ function notesUpdated(){
 }
 export default {
     sectionsUpdated: sectionsUpdated,
-    burnUpdated: burnUpdated,
+    burnUpdated,
     dishwasherUpdated,
     notesUpdated,
 }

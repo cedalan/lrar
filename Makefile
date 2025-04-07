@@ -4,8 +4,8 @@
 CONTAINER_NAME := lrar_database
 SQL_SCRIPT := backend/populate_db.sql
 REMOTE_SQL_SCRIPT := /populate_db.sql
-DB_USER := my_user
-DB_NAME := my_db
+DB_USER := user 
+DB_NAME := db 
 
 # Display available commands
 help:
