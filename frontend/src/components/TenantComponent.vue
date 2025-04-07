@@ -1,15 +1,16 @@
 <template>
   <div v-if="tenants.length" class="all-tenants-div">
     <div v-for="tenant in tenants" :key="tenant.name" class="tenant-div">
+      <button id="tenant-delete-button" @click="deleteTenant(tenant)">X</button>
       <h2>{{ tenant.name }}, {{ tenant.age }} år</h2>
       <img :src="tenant.image_url" alt="Tenant image">
       <p>Tatt ut av oppvaskmaskinen {{ tenant.dishwasher_count }} ganger</p>
       <p>Burns: {{ tenant.current_burn_count }}</p>
       <p>Weekly chore: {{ tenant.weekly_chore.toLowerCase() }}</p>
       <p style="font-style:italic;">{{ tenant.favorite_quote }}</p>
-      <button @click="increaseTenantDishwasherCount(tenant)">Took out dishes</button>
-      <button @click="openBurnForm(tenant)">Give Burn</button>
-      <button @click="showBurnHistory(tenant)">Show Burns</button>
+      <button @click="increaseTenantDishwasherCount(tenant)" class="normal-tenant-button">Took out dishes</button>
+      <button @click="openBurnForm(tenant)">Give Burn</button class="normal-tenant-button">
+      <button @click="showBurnHistory(tenant)">Show Burns</button class="normal-tenant-button">
     </div>
   </div>
   <div v-else>
@@ -80,6 +81,24 @@ export default defineComponent({
         throw new Error("Some error came up when increasing tenant dishwasher count. Error: " + response.statusText);
       }
     },
+    async deleteTenant(tenant: Tenant) {
+      const confirmation = prompt(
+        "Do you really want to delete this tenant? It cannot be undone! Write tenant name in the box and press confirm if you want to delete. Else press cancel"
+      );
+      if (confirmation?.toLowerCase() !== tenant.name.toLowerCase()) {
+        alert("Wrong name!")
+        return
+      };
+      const response = await fetch(`http://127.0.0.1:3001/tenant/${tenant.id}`, {
+        method: "DELETE"
+      })
+
+      if (!response.ok) {
+        throw new Error("Some error came when attempting to delete tenant. Error: " + response.statusText);
+      }
+
+      alert("Tenant deleted successfully!");
+    },
     openBurnForm(tenant: Tenant) {
       this.burnFormSelectedTenant = tenant;
     },
@@ -107,6 +126,7 @@ export default defineComponent({
   text-align: center;
   box-sizing: border-box;
   border-radius: 10px;
+  position: relative;
 }
 
 .tenant-div img {
@@ -117,7 +137,7 @@ export default defineComponent({
   border-radius: 5px;
 }
 
-button {
+.normal-tenant-buttons {
   background-color: #fff;
   color: #333;
   border: none;
@@ -130,7 +150,27 @@ button {
   transition: background-color 0.2s ease-in-out;
 }
 
-button:hover {
+.normal-tenant-buttons:hover {
   background-color: rgba(255, 255, 255, 0.8);
+}
+#tenant-delete-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff4040;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#tenant-delete-button:hover {
+  background-color: #cc0000;
 }
 </style>
