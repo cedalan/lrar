@@ -83,7 +83,7 @@ export default defineComponent({
     },
     async deleteTenant(tenant: Tenant) {
       const confirmation = prompt(
-        "Do you really want to delete this tenant? It cannot be undone! Write tenant name in the box and press confirm if you want to delete. Else press cancel"
+        "Do you really want to delete this tenant? It cannot be undone! Write the name of the tenant in the box and press confirm if you really want to delete them forever"
       );
       if (confirmation?.toLowerCase() !== tenant.name.toLowerCase()) {
         alert("Wrong name!")
