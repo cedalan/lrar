@@ -233,6 +233,47 @@ pub async fn create_note(pool: web::Data<DbPool>, new_note: web::Json<NewNote>) 
     Ok(HttpResponse::Ok().json(result))
 }
 
+#[delete("/tenant/{tenant_id}")]
+pub async fn delete_tenant(tenant_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    let tenant_id = tenant_id.into_inner();
+
+    let deleted_tenant = web::block(move || {
+        let mut conn = pool.get().expect("Failed to get DB connection!");
+
+        let existing_tenant = tenants
+            .filter(tenant_id_column.eq(tenant_id))
+            .first::<Tenant>(&mut conn)
+            .optional()?;
+
+        if existing_tenant.is_none() {
+            return Err(diesel::result::Error::NotFound);
+        }
+        diesel::delete(burn.filter(receiver_id.eq(tenant_id))).execute(&mut conn)?; //Burn table references tenant_id, need to remove all burns not to get fk problem
+        diesel::delete(burn.filter(giver_id.eq(tenant_id))).execute(&mut conn)?;
+        
+        diesel::delete(tenants.filter(tenant_id_column.eq(tenant_id))).execute(&mut conn)
+    })
+    .await
+    .map_err(|e| {
+        eprintln!("Blocking error: {:?}", e);
+        ErrorInternalServerError("Error during blocking operation")
+    })?
+    .map_err(|e| {
+        eprintln!("Database error: {:?}", e);
+        ErrorInternalServerError("Error querying the database")
+    })?;
+
+    if deleted_tenant == 0 {
+        return Ok(HttpResponse::NotFound().json(serde_json::json!({
+            "error": "Tenant not found!"
+        })));
+    }
+
+    Ok(HttpResponse::Ok().json(serde_json::json!({
+        "message": "Tenant deleted successfully"
+    })))
+}
+
 #[delete("/note/{note_id}")]
 pub async fn delete_note(note_id: web::Path<i32>, pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
     let note_id = note_id.into_inner();
