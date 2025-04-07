@@ -248,7 +248,9 @@ pub async fn delete_tenant(tenant_id: web::Path<i32>, pool: web::Data<DbPool>) -
         if existing_tenant.is_none() {
             return Err(diesel::result::Error::NotFound);
         }
-
+        diesel::delete(burn.filter(receiver_id.eq(tenant_id))).execute(&mut conn)?; //Burn table references tenant_id, need to remove all burns not to get fk problem
+        diesel::delete(burn.filter(giver_id.eq(tenant_id))).execute(&mut conn)?;
+        
         diesel::delete(tenants.filter(tenant_id_column.eq(tenant_id))).execute(&mut conn)
     })
     .await
