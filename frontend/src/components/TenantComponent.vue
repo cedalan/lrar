@@ -9,8 +9,8 @@
       <p>Weekly chore: {{ tenant.weekly_chore.toLowerCase() }}</p>
       <p style="font-style:italic;">{{ tenant.favorite_quote }}</p>
       <button @click="increaseTenantDishwasherCount(tenant)" class="normal-tenant-button">Took out dishes</button>
-      <button @click="openBurnForm(tenant)">Give Burn</button class="normal-tenant-button">
-      <button @click="showBurnHistory(tenant)">Show Burns</button class="normal-tenant-button">
+      <button @click="openBurnForm(tenant)" class="normal-tenant-button">Give Burn</button>
+      <button @click="showBurnHistory(tenant)" class="normal-tenant-button">Show Burns</button>
     </div>
   </div>
   <div v-else>
@@ -137,7 +137,7 @@ export default defineComponent({
   border-radius: 5px;
 }
 
-.normal-tenant-buttons {
+.normal-tenant-button {
   background-color: #fff;
   color: #333;
   border: none;
@@ -150,7 +150,7 @@ export default defineComponent({
   transition: background-color 0.2s ease-in-out;
 }
 
-.normal-tenant-buttons:hover {
+.normal-tenant-button:hover {
   background-color: rgba(255, 255, 255, 0.8);
 }
 #tenant-delete-button {
