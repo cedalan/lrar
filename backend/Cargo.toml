@@ -6,7 +6,8 @@ edition = "2021"
 [dependencies]
 actix = "0.13"
 actix-web-actors = "4.3"
-tokio-stream = "0.1"
+tokio = "1.44.2"
+tokio-stream = { version = "0.1.15", features = ["sync"] }
 actix-web = "4"
 actix-cors = "0.6"
 actix-multipart = "0.6"
